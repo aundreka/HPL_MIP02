@@ -1,7 +1,6 @@
-/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Page ── */
+/* ── Page: two-column split ── */
 .page {
   width: 100vw;
   height: 100vh;
@@ -9,89 +8,55 @@
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
-/* ── Content column ── */
-.content {
+/* ── LEFT PANEL ── */
+.left-panel {
+  flex: 0 0 52%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 430px;
-  padding: 28px 0 28px 0;
-  animation: fadeUp 0.6s ease both;
+  justify-content: center;
+  gap: 18px;
+  padding: 40px 0 40px 5%;
+  animation: fadeUp 0.6s 0.1s ease both;
 }
 
-/* ── Logo ── */
-.logo {
-  width: auto;
-  max-width: 150px;
-  height: auto;
-  object-fit: contain;
-  animation: fadeUp 0.6s 0.05s ease both;
-  opacity: 0;
-  animation-fill-mode: forwards;
-  margin-bottom: 50px;
-}
-
-/* ── Title ── */
-.title-img {
-  width: 88%;
-  max-width: 360px;
-  height: auto;
-  object-fit: contain;
-  animation: fadeUp 0.6s 0.15s ease both;
-  opacity: 0;
-  animation-fill-mode: forwards;
-  margin-bottom: 20px;
-}
-
-/* ── Carousel viewport ── */
+/* ── Carousel ── */
 .carousel-viewport {
   width: 100%;
   overflow: hidden;
   position: relative;
-  animation: fadeUp 0.6s 0.25s ease both;
-  opacity: 0;
-  animation-fill-mode: forwards;
-  margin-bottom: 30px;
-  -webkit-animation: fadeUp 0.6s 0.25s ease both;
 }
 
-/* ── Track ── */
 .carousel-track {
   display: flex;
-  gap: 14px;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 16px;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
-/* ── Each slide ── */
 .carousel-slide {
-  flex: 0 0 86%;
-  cursor: pointer;
-  border-radius: 18px;
+  flex: 0 0 80%;
+  border-radius: 20px;
   overflow: hidden;
   border: 2.5px solid #d9a8a8;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.22);
-  transition: transform 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
-  opacity: 0.5;
-  transform: scale(0.90);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.22);
+  opacity: 0.45;
+  transform: scale(0.94);
+  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
   background: #fff;
-  -webkit-transform: scale(0.90);
-  -moz-transform: scale(0.90);
-  -ms-transform: scale(0.90);
-  -o-transform: scale(0.90);
 }
 
 .carousel-slide.active {
   opacity: 1;
   transform: scale(1);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.30);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
 }
 
 .slide-img {
@@ -99,16 +64,13 @@
   height: auto;
   display: block;
   object-fit: cover;
-  border-radius: 16px;
+  border-radius: 18px;
 }
 
 /* ── Dots ── */
 .dots {
   display: flex;
-  gap: 8px;
-  animation: fadeUp 0.6s 0.35s ease both;
-  opacity: 0;
-  animation-fill-mode: forwards;
+  gap: 9px;
 }
 
 .dot {
@@ -116,51 +78,77 @@
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: rgba(255,255,255,0.35);
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
   padding: 0;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .dot-active {
   background: #fff;
-  transform: scale(1.3);
+  transform: scale(1.35);
+}
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  flex: 0 0 48%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 40px 6%;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+/* ── Logo ── */
+.logo {
+  width: auto;
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ── Title ── */
+.title-img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  object-fit: contain;
 }
 
 /* ── CTA ── */
 .cta-btn {
-  width: 82%;
-  max-width: 320px;
+  width: 80%;
+  max-width: 340px;
   height: auto;
   cursor: pointer;
-  border-radius: 10px;
-  /* pulse-grow animation */
-  animation:
-    fadeUp 0.6s 0.45s ease both,
-    pulse 2s 1.2s ease-in-out infinite;
-  opacity: 0;
-  animation-fill-mode: forwards;
+  border-radius: 12px;
+  animation: pulse 2s 1s ease-in-out infinite;
+  transition: filter 0.18s ease;
 }
 
 .cta-btn:hover {
   animation-play-state: paused;
-  transform: scale(1.06);
+  transform: scale(1.05);
   filter: brightness(1.1);
   transition: transform 0.18s ease, filter 0.18s ease;
 }
 
 .cta-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 /* ── Keyframes ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(22px); }
+  from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse {
   0%   { transform: scale(1); }
-  50%  { transform: scale(1.045); }
+  50%  { transform: scale(1.048); }
   100% { transform: scale(1); }
 }
