@@ -1,6 +1,5 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-.page {
+/* ── Page ── */
+.ec2l-page {
   width: 100vw;
   height: 100vh;
   background-size: cover;
@@ -12,7 +11,8 @@
   overflow: hidden;
 }
 
-.left-panel {
+/* ── Left panel ── */
+.ec2l-left {
   flex: 0 0 52%;
   height: 100%;
   display: flex;
@@ -21,58 +21,40 @@
   justify-content: center;
   gap: 18px;
   padding: 40px 0 40px 5%;
-  animation: fadeUp 0.6s 0.1s ease both;
 }
 
-.image-stage {
-  width: 100%;
-  max-width: 640px;
-  aspect-ratio: 4 / 5;
-  position: relative;
-  cursor: pointer;
-}
-
-.stage-slide {
-  position: absolute;
-  inset: 0;
+/* ── Image wrapper — handles bounce animation ── */
+.ec2l-image-wrap {
+  width: 80%;
   border-radius: 20px;
   overflow: hidden;
   border: 2.5px solid #d9a8a8;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.22);
-  background: #fff;
-  will-change: transform, opacity;
-}
-
-.stage-slide-active {
-  opacity: 1;
-  transform: translateY(0) scale(1) rotate(0deg);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
 }
 
-.stage-slide-enter {
-  animation: bounceIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  z-index: 2;
+.ec2l-image-wrap.bounce-in {
+  animation: bounceIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.stage-slide-exit {
-  animation: bounceOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
-  z-index: 1;
+.ec2l-image-wrap.bounce-out {
+  animation: bounceOut 0.35s cubic-bezier(0.36, 0, 0.66, -0.56) both;
 }
 
-.slide-img {
+.ec2l-image {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   object-fit: cover;
   border-radius: 18px;
 }
 
-.dots {
+/* ── Dots ── */
+.ec2l-dots {
   display: flex;
   gap: 9px;
 }
 
-.dot {
+.ec2l-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -83,12 +65,13 @@
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.dot-active {
+.ec2l-dot-active {
   background: #fff;
   transform: scale(1.35);
 }
 
-.right-panel {
+/* ── Right panel ── */
+.ec2l-right {
   flex: 0 0 48%;
   height: 100%;
   background: #fff;
@@ -98,86 +81,70 @@
   justify-content: center;
   gap: 28px;
   padding: 40px 6%;
-  animation: fadeUp 0.6s 0.2s ease both;
 }
 
-.logo {
+/* ── Logo ── */
+.ec2l-logo {
   width: auto;
   max-width: 200px;
   height: auto;
   object-fit: contain;
 }
 
-.title-img {
+/* ── Title ── */
+.ec2l-title {
   width: 100%;
   max-width: 420px;
   height: auto;
   object-fit: contain;
 }
 
-.cta-btn {
+/* ── CTA ── */
+.ec2l-cta {
   width: 80%;
   max-width: 340px;
-  display: block;
   height: auto;
   cursor: pointer;
   border-radius: 12px;
-  transform-origin: center;
-  will-change: transform;
-  animation: pulse 1.8s ease-in-out infinite;
-  transition: transform 0.18s ease, filter 0.18s ease;
+  animation: pulse 2s 1s ease-in-out infinite;
 }
 
-.cta-btn:hover {
+.ec2l-cta:hover {
   animation-play-state: paused;
   transform: scale(1.05);
   filter: brightness(1.1);
   transition: transform 0.18s ease, filter 0.18s ease;
 }
 
-.cta-btn:active {
+.ec2l-cta:active {
   transform: scale(0.97);
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.048); }
-  100% { transform: scale(1); }
-}
-
+/* ── Keyframes ── */
 @keyframes bounceIn {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(36px) scale(0.88) rotate(-2deg);
+    transform: scale(0.75) translateY(30px);
   }
-  55% {
+  to {
     opacity: 1;
-    transform: translateY(-16px) scale(1.04) rotate(1deg);
-  }
-  78% {
-    transform: translateY(8px) scale(0.99) rotate(-0.5deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: scale(1) translateY(0);
   }
 }
 
 @keyframes bounceOut {
-  0% {
+  from {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: scale(1) translateY(0);
   }
-  35% {
-    transform: translateY(-12px) scale(1.02) rotate(1deg);
-  }
-  100% {
+  to {
     opacity: 0;
-    transform: translateY(-34px) scale(0.9) rotate(2deg);
+    transform: scale(0.75) translateY(-30px);
   }
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.048); }
+  100% { transform: scale(1); }
 }
