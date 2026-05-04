@@ -118,7 +118,7 @@ export default function App() {
               onClick={() => {
                 playClick();
                 window.open(
-                  `${window.location.origin}${getBasePath()}/#/components/${item.id}`,
+                  `./#/components/${item.id}`,
                   "_blank",
                   "noopener,noreferrer"
                 );
