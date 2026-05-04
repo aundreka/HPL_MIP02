@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./endcard2_landscape.css";
+import { useSound } from "../../hooks/useSound";
+import clickSfx from "../../assets/sfx/click.wav";
+import popSfx from "../../assets/sfx/pop.mp3";
 
 import logo from "../../assets/images/landscape/logo.png";
 import title from "../../assets/images/landscape/title.png";
@@ -15,10 +18,14 @@ import image6 from "../../assets/images/landscape/IMAGE_6.png";
 
 const IMAGES = [image1, image2, image3, image4, image5, image6];
 const INTERVAL = 2000;
+const BOUNCE_OUT_DURATION = 420;
 
 export default function Endcard2Landscape() {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
+  const playClick = useSound(clickSfx, 0.45);
+  const playPop = useSound(popSfx, 0.45);
+  const hasMountedRef = useRef(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,10 +33,18 @@ export default function Endcard2Landscape() {
       setTimeout(() => {
         setCurrent((prev) => (prev + 1) % IMAGES.length);
         setBouncing(false);
-      }, 350);
+      }, BOUNCE_OUT_DURATION);
     }, INTERVAL);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+    playPop();
+  }, [current, playPop]);
 
   return (
     <div className="ec2l-page" style={{ backgroundImage: `url(${bg})` }}>
@@ -55,14 +70,17 @@ export default function Endcard2Landscape() {
       </div>
 
       {/* RIGHT — branding */}
-      <div className="ec2l-right">
-        <img src={logo} alt="Flutterhabit" className="ec2l-logo" />
-        <img src={title} alt="The Glow-Getter Brunette" className="ec2l-title" />
+      <div className="right-panel">
+        <img src={logo} alt="Flutterhabit" className="logo" />
+        <img src={title} alt="The Glow-Getter Brunette" className="title-img" />
         <img
           src={cta}
           alt="Shop Now"
-          className="ec2l-cta"
-          onClick={() => window.open("https://flutterhabit.com", "_blank")}
+          className="cta-btn"
+          onClick={() => {
+            playClick();
+            window.open("https://flutterhabit.com", "_blank");
+          }}
         />
       </div>
     </div>

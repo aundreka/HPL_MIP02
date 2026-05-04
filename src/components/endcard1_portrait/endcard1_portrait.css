@@ -1,6 +1,7 @@
+/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Page: two-column split ── */
+/* ── Page ── */
 .page {
   width: 100vw;
   height: 100vh;
@@ -8,59 +9,89 @@
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
-  flex-direction: row;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
-/* ── LEFT PANEL ── */
-.left-panel {
-  flex: 0 0 52%;
-  height: 100%;
+/* ── Content column ── */
+.content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 40px 0 40px 5%;
-  animation: fadeUp 0.6s 0.1s ease both;
+  gap: 14px;
+  width: 100%;
+  max-width: 430px;
+  padding: 28px 0 28px 0;
+  animation: fadeUp 0.6s ease both;
 }
 
-/* ── Carousel ── */
+/* ── Logo ── */
+.logo {
+  width: auto;
+  max-width: 150px;
+  height: auto;
+  object-fit: contain;
+  animation: fadeUp 0.6s 0.05s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  margin-bottom: 50px;
+}
+
+/* ── Title ── */
+.title-img {
+  width: 88%;
+  max-width: 360px;
+  height: auto;
+  object-fit: contain;
+  animation: fadeUp 0.6s 0.15s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  margin-bottom: 20px;
+}
+
+/* ── Carousel viewport ── */
 .carousel-viewport {
   width: 100%;
   overflow: hidden;
   position: relative;
+  animation: fadeUp 0.6s 0.25s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  margin-bottom: 14px;
+  -webkit-animation: fadeUp 0.6s 0.25s ease both;
 }
 
+/* ── Track ── */
 .carousel-track {
   display: flex;
-  gap: 16px;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 14px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
+/* ── Each slide ── */
 .carousel-slide {
-  flex: 0 0 80%;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 2.5px solid #d9a8a8;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.22);
-  opacity: 0.45;
-  transform: scale(0.94);
-  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+  flex: 0 0 86%;
   cursor: pointer;
-  background: #fff;
-  -webkit-transform: scale(0.94);
-  -moz-transform: scale(0.94);
-  -ms-transform: scale(0.94);
-  -o-transform: scale(0.94);
+  border-radius: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
+  opacity: 0.5;
+  transform: scale(0.90);
+  -webkit-transform: scale(0.90);
+  -moz-transform: scale(0.90);
+  -ms-transform: scale(0.90);
+  -o-transform: scale(0.90);
 }
 
 .carousel-slide.active {
   opacity: 1;
   transform: scale(1);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  box-shadow: none;
 }
 
 .slide-img {
@@ -68,13 +99,19 @@
   height: auto;
   display: block;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 0;
+  background: transparent;
 }
 
 /* ── Dots ── */
 .dots {
   display: flex;
-  gap: 9px;
+  gap: 8px;
+  animation: fadeUp 0.6s 0.35s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+    margin-bottom: 30px;
+
 }
 
 .dot {
@@ -82,84 +119,51 @@
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255,255,255,0.35);
   cursor: pointer;
-  padding: 0;
   transition: background 0.3s ease, transform 0.3s ease;
+  padding: 0;
 }
 
 .dot-active {
   background: #fff;
-  transform: scale(1.35);
-}
-
-/* ── RIGHT PANEL ── */
-.right-panel {
-  flex: 0 0 48%;
-  height: 100%;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  padding: 40px 6%;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-
-/* ── Logo ── */
-.logo {
-  width: auto;
-  max-width: 200px;
-  height: auto;
-  object-fit: contain;
-}
-
-/* ── Title ── */
-.title-img {
-  width: 100%;
-  max-width: 420px;
-  height: auto;
-  object-fit: contain;
+  transform: scale(1.3);
 }
 
 /* ── CTA ── */
 .cta-btn {
-  width: 80%;
-  max-width: 340px;
-  display: block;
+  width: 82%;
+  max-width: 320px;
   height: auto;
   cursor: pointer;
-  border-radius: 12px;
-  transform-origin: center;
-  will-change: transform;
-  animation: pulse 1.8s ease-in-out infinite;
-  transition: transform 0.18s ease, filter 0.18s ease;
+  border-radius: 10px;
+  /* pulse-grow animation */
+  animation:
+    fadeUp 0.6s 0.45s ease both,
+    pulse 2s 1.2s ease-in-out infinite;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .cta-btn:hover {
   animation-play-state: paused;
-  transform: scale(1.05);
+  transform: scale(1.06);
   filter: brightness(1.1);
   transition: transform 0.18s ease, filter 0.18s ease;
 }
 
 .cta-btn:active {
-  transform: scale(0.97);
-  -webkit-transform: scale(0.97);
-  -moz-transform: scale(0.97);
-  -ms-transform: scale(0.97);
-  -o-transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 /* ── Keyframes ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse {
   0%   { transform: scale(1); }
-  50%  { transform: scale(1.048); }
-  100% { transform: scale(1); }
+  50%  { transform: scale(1.045); }
+  100% { transform: scale(1); -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); }
 }

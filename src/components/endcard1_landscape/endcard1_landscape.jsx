@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./endcard1_landscape.css";
+import { useSound } from "../../hooks/useSound";
+import clickSfx from "../../assets/sfx/click.wav";
+import popSfx from "../../assets/sfx/pop.mp3";
 import logo from "../../assets/images/landscape/logo.png";
 import title from "../../assets/images/landscape/title.png";
 import cta from "../../assets/images/landscape/cta.png";
@@ -18,6 +21,9 @@ const INTERVAL = 2000;
 export default function EC1L() {
   const [current, setCurrent] = useState(0);
   const trackRef = useRef(null);
+  const hasMountedRef = useRef(false);
+  const playClick = useSound(clickSfx, 0.45);
+  const playPop = useSound(popSfx, 0.45);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,6 +31,14 @@ export default function EC1L() {
     }, INTERVAL);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+    playPop();
+  }, [current, playPop]);
 
   useEffect(() => {
     if (!trackRef.current) return;
@@ -69,7 +83,10 @@ export default function EC1L() {
           src={cta}
           alt="Shop Now"
           className="cta-btn"
-          onClick={() => window.open("https://flutterhabit.com", "_blank")}
+          onClick={() => {
+            playClick();
+            window.open("https://flutterhabit.com", "_blank");
+          }}
         />
       </div>
     </div>

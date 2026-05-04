@@ -1,26 +1,37 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
+import { useSound } from "./hooks/useSound";
+import clickSfx from "./assets/sfx/click.wav";
 import Endcard1Landscape from "./components/endcard1_landscape/endcard1_landscape.jsx";
 import Endcard1Portrait from "./components/endcard1_portrait/endcard1_portrait.jsx";
+import Endcard2Landscape from "./components/endcard2_landscape";
+import Endcard2Portrait from "./components/endcard2_portrait";
 import MIP02 from "./components/MIP02/MIP02.jsx";
 
 const COMPONENTS = [
   {
     id: "endcard1-portrait",
     label: "Endcard 1 Portrait",
-    description: "Portrait carousel end card.",
     Component: Endcard1Portrait,
   },
   {
     id: "endcard1-landscape",
     label: "Endcard 1 Landscape",
-    description: "Landscape carousel end card.",
     Component: Endcard1Landscape,
+  },
+    {
+    id: "endcard2-portrait",
+    label: "Endcard 2 Portrait",
+    Component: Endcard2Portrait,
+  },
+  {
+    id: "endcard2-landscape",
+    label: "Endcard 2 Landscape",
+    Component: Endcard2Landscape,
   },
   {
     id: "mip02",
     label: "MIP02",
-    description: "Scrollable MIP product flow.",
     Component: MIP02,
   },
 ];
@@ -37,6 +48,7 @@ function getComponentFromPath(pathname) {
 
 export default function App() {
   const [pathname, setPathname] = useState(() => getCurrentPath());
+  const playClick = useSound(clickSfx, 0.45);
 
   useEffect(() => {
     const syncPath = () => setPathname(getCurrentPath());
@@ -65,10 +77,8 @@ export default function App() {
   return (
     <div className="showcaseShell">
       <main className="showcaseBrowser">
-        <p className="showcaseEyebrow">Component Browser</p>
-        <h1 className="showcaseTitle">Components</h1>
         <p className="showcaseDescription">
-          Select a component to open it in a dedicated page.
+          Select a component to open it.
         </p>
         <div className="showcaseNav">
           {COMPONENTS.map((item) => (
@@ -76,13 +86,14 @@ export default function App() {
               key={item.id}
               type="button"
               className="showcaseButton"
-              onClick={() =>
+              onClick={() => {
+                playClick();
                 window.open(
                   `/components/${item.id}`,
                   "_blank",
                   "noopener,noreferrer"
-                )
-              }
+                );
+              }}
             >
               <span className="showcaseButtonLabel">{item.label}</span>
               <span className="showcaseButtonMeta">{item.description}</span>

@@ -29,6 +29,7 @@
 /* ── Carousel ── */
 .carousel-viewport {
   width: 100%;
+  max-width: 560px;
   overflow: hidden;
   position: relative;
 }
@@ -42,15 +43,15 @@
 
 .carousel-slide {
   flex: 0 0 80%;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 2.5px solid #d9a8a8;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.22);
+  max-width: 520px;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
   opacity: 0.45;
   transform: scale(0.94);
   transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
-  background: #fff;
   -webkit-transform: scale(0.94);
   -moz-transform: scale(0.94);
   -ms-transform: scale(0.94);
@@ -60,7 +61,7 @@
 .carousel-slide.active {
   opacity: 1;
   transform: scale(1);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  box-shadow: none;
 }
 
 .slide-img {
@@ -68,7 +69,8 @@
   height: auto;
   display: block;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 0;
+  background: transparent;
 }
 
 /* ── Dots ── */
@@ -104,7 +106,6 @@
   justify-content: center;
   gap: 28px;
   padding: 40px 6%;
-  animation: fadeUp 0.6s 0.2s ease both;
 }
 
 /* ── Logo ── */
