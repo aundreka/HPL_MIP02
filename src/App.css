@@ -1,3 +1,7 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Page ── */
 .page {
   width: 100vw;
   height: 100vh;
@@ -10,136 +14,146 @@
   overflow: hidden;
 }
 
+/* ── Content column ── */
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  max-width: 420px;
-  padding: 24px 20px;
-  animation: fadeUp 0.7s ease both;
+  max-width: 430px;
+  padding: 28px 0 28px 0;
+  animation: fadeUp 0.6s ease both;
 }
 
-/* Logo */
-.logo-wrap {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
+/* ── Logo ── */
 .logo {
   width: auto;
-  max-width: 160px;
+  max-width: 150px;
   height: auto;
   object-fit: contain;
+  animation: fadeUp 0.6s 0.05s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
-/* Title */
-.title-wrap {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
+/* ── Title ── */
 .title-img {
-  width: 100%;
-  max-width: 340px;
-  height: auto;
-  object-fit: contain;
-}
-
-/* Product Card */
-.card {
-  width: 100%;
+  width: 88%;
   max-width: 360px;
-  background: #fff;
-  border-radius: 18px;
-  border: 2px solid #e8c4c4;
-  padding: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  animation: fadeUp 0.7s 0.15s ease both;
-}
-
-.card-inner {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
-
-.card-product {
-  width: 48%;
   height: auto;
   object-fit: contain;
-  border-radius: 8px;
+  animation: fadeUp 0.6s 0.15s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
-.card-comparison {
+/* ── Carousel viewport ── */
+.carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding-left: 6%;          /* left breathing room */
+  animation: fadeUp 0.6s 0.25s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* ── Track ── */
+.carousel-track {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 48%;
+  gap: 14px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-.comparison-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+/* ── Each slide ── */
+.carousel-slide {
+  flex: 0 0 82%;             /* active card takes ~82% width */
+  cursor: pointer;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2.5px solid #d9a8a8;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
+  opacity: 0.5;
+  transform: scale(0.95);
+  background: #fff;
 }
 
-.label {
-  font-family: 'Raleway', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #555;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.30);
 }
 
-.eye-img {
+.slide-img {
   width: 100%;
   height: auto;
+  display: block;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 16px;
 }
 
-/* CTA */
-.cta-wrap {
-  width: 100%;
+/* ── Dots ── */
+.dots {
   display: flex;
-  justify-content: center;
-  animation: fadeUp 0.7s 0.3s ease both;
+  gap: 8px;
+  animation: fadeUp 0.6s 0.35s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  padding: 0;
+}
+
+.dot-active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+/* ── CTA ── */
 .cta-btn {
-  width: 100%;
+  width: 82%;
   max-width: 320px;
   height: auto;
   cursor: pointer;
-  transition: transform 0.18s ease, filter 0.18s ease;
-  border-radius: 8px;
+  border-radius: 10px;
+  /* pulse-grow animation */
+  animation:
+    fadeUp 0.6s 0.45s ease both,
+    pulse 2s 1.2s ease-in-out infinite;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .cta-btn:hover {
-  transform: scale(1.03);
-  filter: brightness(1.08);
+  animation-play-state: paused;
+  transform: scale(1.06);
+  filter: brightness(1.1);
+  transition: transform 0.18s ease, filter 0.18s ease;
 }
 
 .cta-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
-/* Animation */
+/* ── Keyframes ── */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.045); }
+  100% { transform: scale(1); }
 }
