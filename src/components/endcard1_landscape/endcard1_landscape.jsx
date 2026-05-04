@@ -142,19 +142,6 @@ export default function EC1L() {
             })}
           </div>
         </div>
-
-        <div className="dots">
-          {IMAGES.map((_, i) => (
-            <button
-              key={i}
-              className={`dot ${i === current ? "dot-active" : ""}`}
-              onClick={() => {
-                const forwardDelta = getNormalizedIndex(i - current, IMAGES.length);
-                startTransition(forwardDelta);
-              }}
-            />
-          ))}
-        </div>
       </div>
 
       <div className="right-panel ec1l-right-panel">
