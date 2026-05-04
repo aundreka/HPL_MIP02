@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting…</title>
+    <script>
+      (function () {
+        var pathname = window.location.pathname || "/";
+        var repoBase = "/HPL_040526";
+        var relativePath = pathname.indexOf(repoBase) === 0
+          ? pathname.slice(repoBase.length)
+          : pathname;
+        var normalizedPath = relativePath.replace(/\/+$/, "") || "/";
+        var target =
+          window.location.origin +
+          repoBase +
+          "/#" +
+          normalizedPath +
+          window.location.search;
+
+        window.location.replace(target);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
