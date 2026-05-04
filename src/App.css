@@ -14,19 +14,15 @@ body,
 body {
   min-height: 100vh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #17323e;
-}
-
-body:not(.mip02-page) {
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.68) 40%, transparent 60%),
-    linear-gradient(135deg, #f3e0d4 0%, #d7eced 48%, #f6f1e8 100%);
+  color: #111;
+  background: #fff;
 }
 
 button {
   font: inherit;
 }
 
+/* ── Shell ── */
 .showcaseShell {
   min-height: 100vh;
   display: grid;
@@ -34,81 +30,76 @@ button {
   padding: 24px;
 }
 
+/* ── Browser ── */
 .showcaseBrowser {
-  width: min(720px, 100%);
-  padding: 28px;
-  border-radius: 28px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 18px 50px rgba(58, 53, 41, 0.14);
+  width: min(560px, 100%);
+  padding: 0;
 }
 
 .showcaseEyebrow {
-  margin: 0 0 8px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8a5b42;
+  color: #999;
 }
 
 .showcaseTitle {
   margin: 0;
-  font-size: 1.75rem;
-  line-height: 1.05;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #111;
 }
 
 .showcaseDescription {
   margin: 10px 0 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: rgba(23, 50, 62, 0.8);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #888;
 }
 
+/* ── Nav ── */
 .showcaseNav {
   display: grid;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 0;
+  margin-top: 32px;
+  border-top: 1px solid #e8e8e8;
 }
 
 .showcaseButton {
   display: block;
   width: 100%;
-  padding: 14px 16px;
+  padding: 20px 0;
   text-align: left;
-  border-radius: 18px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e8e8e8;
   color: inherit;
   cursor: pointer;
-  transition:
-    transform 150ms ease,
-    box-shadow 150ms ease,
-    border-color 150ms ease,
-    background-color 150ms ease;
+  transition: opacity 150ms ease;
 }
 
 .showcaseButton:hover {
-  transform: translateY(-1px);
-  border-color: rgba(23, 50, 62, 0.24);
-  box-shadow: 0 10px 24px rgba(23, 50, 62, 0.08);
-}
-
-.showcaseButton.is-active {
-  border-color: rgba(110, 72, 45, 0.35);
-  background: linear-gradient(135deg, rgba(255, 245, 236, 0.95), rgba(255, 255, 255, 0.92));
-  box-shadow: 0 14px 32px rgba(138, 91, 66, 0.18);
+  opacity: 0.5;
 }
 
 .showcaseButtonLabel {
   display: block;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111;
 }
 
 .showcaseButtonMeta {
   display: block;
-  margin-top: 4px;
-  font-size: 0.88rem;
-  color: rgba(23, 50, 62, 0.75);
+  margin-top: 3px;
+  font-size: 0.82rem;
+  color: #aaa;
 }
 
+/* ── Stage ── */
 .showcaseStage {
   min-height: 100vh;
 }
@@ -135,7 +126,7 @@ button {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8a5b42;
+  color: #888;
 }
 
 .componentOnlyPage {
@@ -145,11 +136,10 @@ button {
 @media (max-width: 900px) {
   .showcaseShell {
     display: block;
-    padding: 16px;
+    padding: 48px 24px;
   }
 
   .showcaseBrowser {
     width: auto;
-    padding: 20px;
   }
 }
