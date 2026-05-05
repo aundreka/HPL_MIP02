@@ -1,145 +1,801 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* ─── Design Tokens ─────────────────────────────────────────────────── */
+:root {
+  --rose: #e49a91;
+  --soft-rose: #f2cac6;
+  --deep-teal: #133f4c;
+  --copy: #3a5560;
+  --ink: #0d2d36;
+  --bg-top: #456875;
+  --bg-deep-fade: #65808a;
+  --bg-mid: #aebbc0;
+  --bg-haze: #dce2e4;
+  --bg-bottom: #f8f4f6;
+  --bg-stop-top-end: 1%;
+  --bg-stop-deep-fade: 8%;
+  --bg-stop-mid: 15%;
+  --bg-stop-haze: 25%;
+  --bg-stop-bottom-start: 30%;
+  --bg-stop-top-end-landscape: 1%;
+  --bg-stop-deep-fade-landscape: 8%;
+  --bg-stop-mid-landscape: 15%;
+  --bg-stop-haze-landscape: 20%;
+  --bg-stop-bottom-start-landscape: 28%;
+  --display: Georgia, "Times New Roman", serif;
+  --sans: system-ui, sans-serif;
 }
 
-html,
-body,
-#root {
-  min-height: 100%;
+/* ─── Page Shell ────────────────────────────────────────────────────── */
+.pageShell {
+  --content-scale: 1;
+  --logo-width: 150px;
+  --hero-title-width: 500px;
+  --hero-subtitle-width: 280px;
+  --product-width: 500px;
+  --product-subtitle-width: 480px;
+  --application-title-width: 400px;
+  --steps-header-margin-top: 62px;
+  --steps-header-margin-bottom: 24px;
+  --steps-grid-gap: 40px;
+  --step-card-gap: 10px;
+  --step-copy-gap: 6px;
+  --step-label-width: 108px;
+  --step-title-width: 330px;
+  --step-body-width: 350px;
+  --step-image-size: 300px;
+  --shop-button-size: 306px;
+  --shop-button-margin-top: 50px;
+  position: relative;
+  overflow: clip;
+  min-height: 100vh;
+  padding: 28px 20px 56px;
+  color: var(--ink);
+  background-color: var(--bg-bottom);
+  background-image: linear-gradient(
+    180deg,
+    var(--bg-top) 0%,
+    var(--bg-top) var(--bg-stop-top-end),
+    var(--bg-deep-fade) var(--bg-stop-deep-fade),
+    var(--bg-mid) var(--bg-stop-mid),
+    var(--bg-haze) var(--bg-stop-haze),
+    var(--bg-bottom) var(--bg-stop-bottom-start),
+    var(--bg-bottom) 100%
+  );
+  background-repeat: no-repeat;
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────────── */
+.heroPanel {
+  display: grid;
+  justify-items: center;
+  gap: 26px;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.brandLogo {
+  width: calc(var(--logo-width) * var(--content-scale));
+  margin-bottom: 30px;
+  margin-top: 40px;
+}
+
+.heroHeadingGroup {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.heroTitleImage  { width: min(100%, calc(var(--hero-title-width) * var(--content-scale))); }
+.heroSubtitleImage {
+  width: min(100%, calc(var(--hero-subtitle-width) * var(--content-scale)));
+  margin-bottom: 30px;
+}
+
+.heroKicker,
+.sectionEyebrow,
+.stepEyebrow {
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--rose);
+}
+.heroKicker { font-size: 0.92rem; }
+
+.heroPanel h1,
+.stepsHeader h2,
+.stepCard h3,
+.modalCard h2 {
+  margin: 0;
+  color: var(--deep-teal);
+  font-family: var(--display);
 }
 
-body {
-  min-height: 100vh;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #111;
-  background: #fff;
+/* ─── Story / Product ───────────────────────────────────────────────── */
+.heroStory {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+  margin: 30px auto 12px;
 }
 
-button {
-  font: inherit;
+.productColumn {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 10px;
 }
 
-/* ── Shell ── */
-.showcaseShell {
-  min-height: 100vh;
+.productHeroImage {
+  display: block;
+  width: min(100%, calc(var(--product-width) * var(--content-scale)));
+  height: auto;
+  margin-inline: auto;
+  margin-bottom: 30px;
+}
+
+.productSubtitleImage {
+  display: block;
+  width: min(100%, calc(var(--product-subtitle-width) * var(--content-scale)));
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.heroVisualCard,
+.stepImageFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(19, 63, 76, 0.12);
+}
+
+.heroVisualCard img,
+.stepImageFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.comparisonFrame { align-self: center; }
+
+/* ─── Intro ─────────────────────────────────────────────────────────── */
+.introPanel {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+
+.introPanel p,
+.stepCard p,
+.modalCard p {
+  max-width: 32ch;
+  margin: 0;
+  color: var(--copy);
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+/* ─── Read More / Close ─────────────────────────────────────────────── */
+.readMoreButton,
+.modalCloseButton {
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.readMoreButton {
+  min-width: 188px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--deep-teal);
+  color: #fff;
+  font: 700 0.96rem/1 var(--sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 16px 28px rgba(11, 72, 84, 0.22);
+}
+
+.readMoreButton:hover,
+.modalCloseButton:hover {
+  transform: translateY(-2px);
+}
+
+/* ─── Steps Header ──────────────────────────────────────────────────── */
+.stepsHeader {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  margin-top: var(--steps-header-margin-top);
+  margin-bottom: var(--steps-header-margin-bottom);
+  text-align: center;
+}
+
+.applicationTitleImage {
+  width: min(100%, calc(var(--application-title-width) * var(--content-scale)));
+  margin-bottom: 50px;
+}
+
+/* ─── Steps Grid ────────────────────────────────────────────────────── */
+.stepsGrid {
+  display: grid;
+  gap: var(--steps-grid-gap);
+}
+
+.stepCard {
+  display: grid;
+  justify-items: center;
+  gap: var(--step-card-gap);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  /* Subtle lift on hover for the whole card */
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stepCopyImages {
+  display: grid;
+  gap: var(--step-copy-gap);
+  justify-items: center;
+  text-align: center;
+  align-items: start;
+}
+
+.stepLabelImage {
+  width: min(100%, calc(var(--step-label-width, 108px) * var(--content-scale)));
+  margin-bottom: 30px;
+}
+
+.stepTitleImage {
+  width: min(100%, calc(var(--step-title-width, 330px) * var(--content-scale)));
+  margin-bottom: 30px;
+}
+
+.stepBodyImage {
+  width: min(100%, calc(var(--step-body-width) * var(--content-scale)));
+  margin-bottom: 30px;
+}
+
+.stepImageFrame {
+  width: min(100%, calc(var(--step-image-size) * var(--content-scale)));
+  border-radius: 18px;
+  box-shadow: none;
+  margin-top: 2px;
+  margin-bottom: 30px;
+  /* Shimmer overlay for image frames */
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 400ms ease, border-color 400ms ease;
+}
+
+.stepImageFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0s;
+  pointer-events: none;
+}
+
+/* Shimmer fires when the card becomes visible */
+.stepCard.is-visible .stepImageFrame::after {
+  transform: translateX(100%);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--shimmer-delay, 0.4s);
+}
+
+.stepImageFrame img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* ─── Shop Now ──────────────────────────────────────────────────────── */
+.shopNowWrap {
+  width: min(100%, calc(var(--shop-button-size) * var(--content-scale)));
+  margin: var(--shop-button-margin-top) auto 0;
+  margin-bottom: 20px;
+}
+
+.shopNowImageButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 180ms ease;
+  /* Subtle perpetual pulse to draw the eye */
+  animation: ctaPulse 2.4s ease-in-out infinite;
+}
+
+.shopNowImageButton img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.shopNowImageButton:hover {
+  transform: translateY(-3px) scale(1.03);
+  animation-play-state: paused;
+}
+
+.shopNowImageButton:active {
+  transform: scale(0.96);
+  transition-duration: 80ms;
+}
+
+@keyframes ctaPulse {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-4px) scale(1.025); }
+}
+
+/* ─── Modal ─────────────────────────────────────────────────────────── */
+.modalRoot {
+  position: fixed;
+  inset: 0;
   display: grid;
   place-items: center;
   padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+  z-index: 20;
 }
 
-/* ── Browser ── */
-.showcaseBrowser {
-  width: min(560px, 100%);
-  padding: 0;
+.modalRoot.is-open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.showcaseEyebrow {
-  margin: 0 0 6px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #999;
+.modalScrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 37, 44, 0.44);
+  backdrop-filter: blur(8px);
 }
 
-.showcaseTitle {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: #111;
-}
-
-.showcaseDescription {
-  margin: 10px 0 0;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: #888;
-}
-
-/* ── Nav ── */
-.showcaseNav {
+.modalCard {
+  position: relative;
+  width: min(540px, calc(100vw - 32px));
   display: grid;
-  gap: 0;
-  margin-top: 32px;
-  border-top: 1px solid #e8e8e8;
+  gap: 16px;
+  padding: 28px 22px 24px;
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(251,244,246,0.95));
+  box-shadow: 0 24px 60px rgba(13, 59, 69, 0.22);
+  transform: translateY(12px) scale(0.98);
+  transition: transform 220ms ease;
 }
 
-.showcaseButton {
-  display: block;
-  width: 100%;
-  padding: 20px 0;
-  text-align: left;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #e8e8e8;
-  color: inherit;
-  cursor: pointer;
-  transition: opacity 150ms ease;
+.modalRoot.is-open .modalCard {
+  transform: translateY(0) scale(1);
 }
 
-.showcaseButton:hover {
-  opacity: 0.5;
+.modalCard h2 {
+  font-size: clamp(2.1rem, 7vw, 3.4rem);
+  line-height: 0.96;
 }
 
-.showcaseButtonLabel {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #111;
+.modalCloseButton {
+  justify-self: end;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(11, 72, 84, 0.1);
+  color: var(--deep-teal);
+  font: 700 0.82rem/1 var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.showcaseButtonMeta {
-  display: block;
-  margin-top: 3px;
-  font-size: 0.82rem;
-  color: #aaa;
+.modalHighlights {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
 }
 
-/* ── Stage ── */
-.showcaseStage {
-  min-height: 100vh;
-}
-
-.showcaseStageHeader {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 15;
-  max-width: min(320px, calc(100vw - 32px));
-  padding: 14px 18px;
+.modalHighlights div {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
   border-radius: 18px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 12px 28px rgba(23, 50, 62, 0.1);
+  background: rgba(228, 154, 145, 0.12);
 }
 
-.showcaseStageHeader h2 {
-  margin: 2px 0 0;
+.modalHighlights span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+.modalHighlights strong {
+  color: var(--deep-teal);
   font-size: 1rem;
 }
 
-.showcaseStageLabel {
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+/* ─── Scroll Hand Guide ─────────────────────────────────────────────── */
+.scrollGuide {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 500ms ease;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 24px rgba(19, 63, 76, 0.14);
+}
+
+.scrollGuide.is-hidden {
+  opacity: 0;
+}
+
+.scrollGuide__hand {
+  font-size: 1.8rem;
+  line-height: 1;
+  animation: handBounce 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+}
+
+.scrollGuide__label {
+  font: 700 0.7rem/1 var(--sans);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #888;
+  color: var(--deep-teal);
 }
 
-.componentOnlyPage {
-  min-height: 100vh;
+.scrollGuide__arrow {
+  width: 16px;
+  height: 16px;
+  border-right: 3px solid var(--rose);
+  border-bottom: 3px solid var(--rose);
+  transform: rotate(45deg);
+  animation: arrowFade 1.6s ease-in-out infinite;
+  border-radius: 2px;
 }
 
-@media (max-width: 900px) {
-  .showcaseShell {
-    display: block;
-    padding: 48px 24px;
+@keyframes handBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(8px); }
+}
+
+@keyframes arrowFade {
+  0%,100% { opacity: 1; transform: rotate(45deg) translateY(0); }
+  50%      { opacity: 0.4; transform: rotate(45deg) translateY(4px); }
+}
+
+/* ─── Product Shine Frame ────────────────────────────────────────────── */
+.productShineFrame {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+/* Shine sweep — fires when the parent heroStory becomes visible */
+.heroStory.is-visible .productShineFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 48%,
+    rgba(255, 240, 245, 0.3) 52%,
+    transparent 72%
+  );
+  transform: translateX(100%) skewX(-12deg);
+  animation: productShine 900ms cubic-bezier(0.22, 1, 0.36, 1) 500ms both;
+  pointer-events: none;
+}
+
+@keyframes productShine {
+  from { transform: translateX(-130%) skewX(-12deg); }
+  to   { transform: translateX(130%)  skewX(-12deg); }
+}
+
+/* Pop-in for the product image itself */
+.heroStory.reveal .productShineFrame {
+  transform: scale(0.88);
+  opacity: 0;
+  transition:
+    opacity  700ms cubic-bezier(0.34, 1.3, 0.64, 1) calc(var(--reveal-delay, 0ms) + 80ms),
+    transform 700ms cubic-bezier(0.34, 1.3, 0.64, 1) calc(var(--reveal-delay, 0ms) + 80ms);
+}
+.heroStory.reveal.is-visible .productShineFrame {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ─── Reveal Animations ─────────────────────────────────────────────── */
+
+/* Base hidden state */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+  transition:
+    opacity  750ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 750ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+/* Visible state */
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Logo: drops in from above with a bounce */
+.heroLogoReveal.reveal {
+  transform: translateY(-28px) scale(0.92);
+  transition:
+    opacity  700ms cubic-bezier(0.34, 1.4, 0.64, 1) var(--reveal-delay, 0ms),
+    transform 700ms cubic-bezier(0.34, 1.4, 0.64, 1) var(--reveal-delay, 0ms);
+}
+.heroLogoReveal.reveal.is-visible {
+  transform: translateY(0) scale(1);
+}
+
+/* Title: rises up from below with spring */
+.heroTitleReveal.reveal {
+  transform: translateY(32px) scale(0.96);
+  transition:
+    opacity  750ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 750ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.heroTitleReveal.reveal.is-visible {
+  transform: translateY(0) scale(1);
+}
+
+/* Subtitle: fades up slightly later */
+.heroSubtitleReveal.reveal {
+  transform: translateY(20px);
+  transition:
+    opacity  650ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 650ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.heroSubtitleReveal.reveal.is-visible {
+  transform: translateY(0);
+}
+
+/* Product column: drift in from the left */
+.heroStory.reveal {
+  transform: translateX(-30px) translateY(20px);
+  transition:
+    opacity  800ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.heroStory.reveal.is-visible {
+  transform: translateX(0) translateY(0);
+}
+
+/* Steps header: scale up from slightly smaller */
+.stepsHeader.reveal {
+  transform: scale(0.92);
+  transition:
+    opacity  700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.stepsHeader.reveal.is-visible {
+  transform: scale(1);
+}
+
+/* Step cards alternate left/right slide */
+.stepCard.reveal:nth-child(odd) {
+  transform: translateX(-24px) translateY(32px);
+}
+.stepCard.reveal:nth-child(even) {
+  transform: translateX(24px) translateY(32px);
+}
+.stepCard.reveal {
+  transition:
+    opacity  800ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.stepCard.reveal.is-visible {
+  transform: translateX(0) translateY(0);
+}
+
+/* Step image frame: pop in with a spring after the card arrives */
+.stepCard.is-visible .stepImageFrame {
+  animation: framePop 550ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 300ms);
+}
+
+@keyframes framePop {
+  from { transform: scale(0.88); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* Step label: slide down after card appears */
+.stepCard.is-visible .stepLabelImage {
+  animation: labelDrop 500ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 100ms);
+}
+@keyframes labelDrop {
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Step title: fade up */
+.stepCard.is-visible .stepTitleImage {
+  animation: titleRise 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 180ms);
+}
+@keyframes titleRise {
+  from { transform: translateY(14px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Step body: fade up with more delay */
+.stepCard.is-visible .stepBodyImage {
+  animation: titleRise 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 260ms);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .pageShell {
+    --content-scale: 0.84;
+    --steps-grid-gap: 40px;
+    --shop-button-margin-top: 38px;
+    padding: 24px 16px 48px;
   }
 
-  .showcaseBrowser {
-    width: auto;
+  .heroPanel {
+    gap: 22px;
+  }
+
+  .brandLogo {
+    margin-top: 24px;
+    margin-bottom: 22px;
+  }
+
+  .heroSubtitleImage,
+  .productHeroImage,
+  .stepLabelImage,
+  .stepTitleImage,
+  .stepBodyImage,
+  .applicationTitleImage {
+    margin-bottom: 22px;
+  }
+  .stepImageFrame {
+    margin-bottom: 10px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .pageShell {
+    --content-scale: 0.68;
+    --steps-header-margin-top: 40px;
+    --steps-grid-gap: 30px;
+    --shop-button-margin-top: 28px;
+    padding: 20px 12px 40px;
+  }
+
+  .heroPanel {
+    gap: 18px;
+  }
+
+  .heroHeadingGroup,
+  .productColumn,
+  .stepCopyImages {
+    gap: 8px;
+  }
+
+  .productHeroImage,
+  .productSubtitleImage {
+    margin-bottom: 16px;
+  }
+
+  .scrollGuide {
+    bottom: 18px;
+    padding: 8px 12px;
+  }
+
+  .scrollGuide__hand {
+    font-size: 1.5rem;
+  }
+
+  .stepLabelImage,
+  .stepTitleImage,
+  .stepBodyImage,
+  .applicationTitleImage {
+    margin-bottom: 18px;
+  }
+  .stepImageFrame {
+    margin-bottom: 10px;
+  }}
+
+
+@media (min-width: 760px) {
+  .pageShell {
+    --application-title-width: 400px;
+    --steps-header-margin-top: 74px;
+    --steps-header-margin-bottom: 26px;
+    --steps-grid-gap: 10px;
+    padding: 36px 34px 72px;
+    background-image: linear-gradient(
+      180deg,
+      var(--bg-top) 0%,
+      var(--bg-top) var(--bg-stop-top-end-landscape),
+      var(--bg-deep-fade) var(--bg-stop-deep-fade-landscape),
+      var(--bg-mid) var(--bg-stop-mid-landscape),
+      var(--bg-haze) var(--bg-stop-haze-landscape),
+      var(--bg-bottom) var(--bg-stop-bottom-start-landscape),
+      var(--bg-bottom) 100%
+    );
+  }
+
+  .heroStory {
+    gap: 26px;
+    margin: 42px auto 10px;
+  }
+
+  .modalHighlights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ─── Reduced Motion ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .heroLogoReveal.reveal,
+  .heroTitleReveal.reveal,
+  .heroSubtitleReveal.reveal,
+  .heroStory.reveal,
+  .stepsHeader.reveal,
+  .stepCard.reveal,
+  .productShineFrame,
+  .modalRoot,
+  .modalCard,
+  .readMoreButton,
+  .modalCloseButton,
+  .shopNowImageButton {
+    transition: none;
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .heroStory.reveal .productShineFrame,
+  .heroLogoReveal.reveal,
+  .heroTitleReveal.reveal,
+  .heroSubtitleReveal.reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .heroStory.is-visible .productShineFrame::after {
+    animation: none;
+  }
+  .scrollGuide__hand,
+  .scrollGuide__arrow {
+    animation: none;
+  }
+  .shopNowImageButton {
+    animation: none;
   }
 }
