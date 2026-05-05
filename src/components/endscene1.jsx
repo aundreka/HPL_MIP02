@@ -61,10 +61,38 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
-  const timeoutRef = useRef(null);
   const popAudioRef = useRef(null);
+  const timeoutRef = useRef(null);
   const popCountRef = useRef(0);
   const preloadedImagesRef = useRef([]);
+
+  const playPop = useCallback(async () => {
+    const template = popAudioRef.current;
+    if (!template) {
+      return;
+    }
+
+    const isUnlocked = await ensureAudioUnlocked();
+    if (!isUnlocked) {
+      return;
+    }
+
+    const player = template.cloneNode();
+    player.muted = false;
+    player.defaultMuted = false;
+    player.playsInline = true;
+    player.preload = "auto";
+    player.volume = POP_VOLUME;
+    player.currentTime = 0;
+
+    const cleanup = () => {
+      player.pause();
+      player.src = "";
+    };
+
+    player.addEventListener("ended", cleanup, { once: true });
+    player.play().catch(cleanup);
+  }, []);
 
   const handleClickAction = useCallback(() => {
     const mraid = window.mraid || {};
@@ -90,35 +118,10 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
-    const playPopInstance = async () => {
-      const template = popAudioRef.current;
-      if (!template) {
-        return false;
-      }
-
-      const player = template.cloneNode();
-      player.volume = POP_VOLUME;
-      player.currentTime = 0;
-      await player.play();
-      return true;
-    };
-
     const timer = setInterval(() => {
       if (popCountRef.current === 1) {
-        void ensureAudioUnlocked()
-          .then((isUnlocked) => {
-            if (!isUnlocked || popCountRef.current !== 1) {
-              return false;
-            }
-
-            return playPopInstance();
-          })
-          .then((didPlay) => {
-            if (didPlay) {
-              popCountRef.current = 2;
-            }
-          })
-          .catch(() => {});
+        playPop();
+        popCountRef.current = 2;
       }
 
       setBouncing(true);
@@ -146,20 +149,6 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
-    const audio = new Audio(popSfx);
-    audio.preload = "auto";
-    audio.volume = POP_VOLUME;
-    audio.load();
-    popAudioRef.current = audio;
-
-    return () => {
-      audio.pause();
-      audio.src = "";
-      popAudioRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
     const imageSources = [
       portraitBg,
       portraitLogo,
@@ -183,73 +172,13 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
-    let removedListeners = false;
+    if (popCountRef.current > 0) {
+      return;
+    }
 
-    const playPopInstance = async () => {
-      const template = popAudioRef.current;
-      if (!template) {
-        return false;
-      }
-
-      const player = template.cloneNode();
-      player.volume = POP_VOLUME;
-      player.currentTime = 0;
-      await player.play();
-      return true;
-    };
-
-    const removeRetryListeners = () => {
-      if (removedListeners) {
-        return;
-      }
-
-      removedListeners = true;
-      window.removeEventListener("pointerdown", retryPlay);
-      window.removeEventListener("keydown", retryPlay);
-      window.removeEventListener("touchstart", retryPlay);
-    };
-
-    const startFirstPop = async () => {
-      if (popCountRef.current > 0) {
-        removeRetryListeners();
-        return;
-      }
-
-      try {
-        const isUnlocked = await ensureAudioUnlocked();
-        if (!isUnlocked) {
-          return;
-        }
-
-        const didPlay = await playPopInstance();
-        if (!didPlay) {
-          return;
-        }
-
-        popCountRef.current = 1;
-        removeRetryListeners();
-      } catch {
-        // Autoplay can be blocked until the next user gesture.
-      }
-    };
-
-    const retryPlay = () => {
-      void startFirstPop();
-    };
-
-    const frameId = window.requestAnimationFrame(() => {
-      void startFirstPop();
-    });
-
-    window.addEventListener("pointerdown", retryPlay, { passive: true });
-    window.addEventListener("keydown", retryPlay);
-    window.addEventListener("touchstart", retryPlay, { passive: true });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      removeRetryListeners();
-    };
-  }, []);
+    playPop();
+    popCountRef.current = 1;
+  }, [playPop]);
 
   const assets = isLandscape
     ? {
@@ -287,6 +216,16 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
         }
       }}
     >
+      <audio
+        ref={popAudioRef}
+        src={popSfx}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
       {isLandscape ? (
         <>
           <div className="mip-endscene__media-panel">

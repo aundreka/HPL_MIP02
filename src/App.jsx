@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
-import { useSound } from "./hooks/useSound";
-import { primeAudioPlayback } from "./lib/audioUnlock";
+import { ensureAudioUnlocked, primeAudioPlayback } from "./lib/audioUnlock";
 import clickSfx from "./assets/sfx/click.wav";
+import popSfx from "./assets/sfx/pop.mp3";
 import logoImg from "./assets/MIP/LOGO.png";
 import titleImg from "./assets/MIP/title.png";
 import subtitleImg from "./assets/MIP/subtitle.png";
@@ -122,8 +122,37 @@ function ScrollGuide() {
 /* ─── App ─────────────────────────────────────────────────────────── */
 function App() {
   const [showEndscene, setShowEndscene] = useState(false);
-  const playClick = useSound(clickSfx, 0.45);
+  const clickAudioRef = useRef(null);
+  const popAudioRef = useRef(null);
   const endsceneTimeoutRef = useRef(null);
+
+  const playAudio = useCallback(async (audioRef, volume) => {
+    const template = audioRef.current;
+    if (!template) {
+      return;
+    }
+
+    const isUnlocked = await ensureAudioUnlocked();
+    if (!isUnlocked) {
+      return;
+    }
+
+    const player = template.cloneNode();
+    player.muted = false;
+    player.defaultMuted = false;
+    player.playsInline = true;
+    player.preload = "auto";
+    player.volume = volume;
+    player.currentTime = 0;
+
+    const cleanup = () => {
+      player.pause();
+      player.src = "";
+    };
+
+    player.addEventListener("ended", cleanup, { once: true });
+    player.play().catch(cleanup);
+  }, []);
 
   useEffect(() => {
     return primeAudioPlayback();
@@ -131,14 +160,14 @@ function App() {
 
   // Memoised so each step's Reveal doesn't re-create it on every render
   const handleStepReveal = useCallback(() => {
-    playClick();
-  }, [playClick]);
+    void playAudio(popAudioRef, 0.75);
+  }, [playAudio]);
 
   const handleShopNowClick = useCallback(() => {
-    playClick();
+    void playAudio(clickAudioRef, 0.45);
     window.scrollTo({ top: 0, behavior: "auto" });
     setShowEndscene(true);
-  }, [playClick]);
+  }, [playAudio]);
 
   useEffect(() => {
     if (showEndscene) {
@@ -186,6 +215,26 @@ function App() {
 
   return (
     <main className="pageShell">
+      <audio
+        ref={clickAudioRef}
+        src={clickSfx}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
+      <audio
+        ref={popAudioRef}
+        src={popSfx}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
 
       {/* ── Scroll hand guide (QA #7) ── */}
       <ScrollGuide />

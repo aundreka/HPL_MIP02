@@ -52,11 +52,13 @@ export function primeAudioPlayback() {
     window.removeEventListener("pointerdown", handleUnlock, true);
     window.removeEventListener("touchstart", handleUnlock, true);
     window.removeEventListener("keydown", handleUnlock, true);
+    window.removeEventListener("wheel", handleUnlock, true);
   };
 
   window.addEventListener("pointerdown", handleUnlock, true);
   window.addEventListener("touchstart", handleUnlock, true);
   window.addEventListener("keydown", handleUnlock, true);
+  window.addEventListener("wheel", handleUnlock, { passive: true, capture: true });
 
   return removeListeners;
 }

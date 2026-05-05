@@ -1,15 +1,12 @@
-import { useCallback, useEffect, useRef } from "react";
+import { createElement, useCallback, useEffect, useMemo, useRef } from "react";
+import { ensureAudioUnlocked } from "../lib/audioUnlock";
 
 export const useSound = (src, volume = 0.7) => {
   const templateRef = useRef(null);
   const activePlayersRef = useRef(new Set());
 
   useEffect(() => {
-    const audio = new Audio(src);
     const activePlayers = activePlayersRef.current;
-    audio.preload = "auto";
-    audio.volume = volume;
-    templateRef.current = audio;
 
     return () => {
       activePlayers.forEach((player) => {
@@ -17,30 +14,55 @@ export const useSound = (src, volume = 0.7) => {
         player.src = "";
       });
       activePlayers.clear();
-      audio.pause();
-      audio.src = "";
       templateRef.current = null;
     };
-  }, [src, volume]);
+  }, []);
 
   const play = useCallback(() => {
     const template = templateRef.current;
     if (!template) return;
 
-    const player = template.cloneNode();
-    player.volume = volume;
-    player.currentTime = 0;
-    activePlayersRef.current.add(player);
+    void ensureAudioUnlocked()
+      .then((isUnlocked) => {
+        if (!isUnlocked) {
+          return;
+        }
 
-    const cleanup = () => {
-      player.pause();
-      player.src = "";
-      activePlayersRef.current.delete(player);
-    };
+        const player = template.cloneNode();
+        player.muted = false;
+        player.defaultMuted = false;
+        player.playsInline = true;
+        player.preload = "auto";
+        player.volume = volume;
+        player.currentTime = 0;
+        activePlayersRef.current.add(player);
 
-    player.addEventListener("ended", cleanup, { once: true });
-    player.play().catch(cleanup);
+        const cleanup = () => {
+          player.pause();
+          player.src = "";
+          activePlayersRef.current.delete(player);
+        };
+
+        player.addEventListener("ended", cleanup, { once: true });
+        player.play().catch(cleanup);
+      })
+      .catch(() => {});
   }, [volume]);
 
-  return play;
+  const audioElement = useMemo(
+    () =>
+      createElement("audio", {
+        ref: templateRef,
+        src,
+        autoPlay: true,
+        muted: true,
+        playsInline: true,
+        preload: "auto",
+        "aria-hidden": "true",
+        style: { display: "none" },
+      }),
+    [src]
+  );
+
+  return { play, audioElement };
 };
