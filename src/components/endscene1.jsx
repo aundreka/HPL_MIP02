@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./endscene1.css";
+import clickSfx from "../assets/sfx/click.wav";
 import popSfx from "../assets/sfx/pop.mp3";
-import { isAudioUnlocked } from "../lib/audioState";
+import { isAudioUnlocked, markAudioUnlocked } from "../lib/audioState";
 
 import portraitLogo from "../assets/images/portrait/logo.png";
 import portraitTitle from "../assets/images/portrait/title.png";
@@ -61,10 +62,33 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
+  const clickAudioRef = useRef(null);
   const popAudioRef = useRef(null);
   const timeoutRef = useRef(null);
   const popCountRef = useRef(0);
   const preloadedImagesRef = useRef([]);
+
+  const playClick = useCallback((markUnlockedOnSuccess = false) => {
+    const audioElement = clickAudioRef.current;
+    if (!audioElement) {
+      return;
+    }
+
+    audioElement.muted = false;
+    audioElement.defaultMuted = false;
+    audioElement.playsInline = true;
+    audioElement.volume = 0.45;
+    audioElement.currentTime = 0;
+
+    const playAttempt = audioElement.play();
+    if (markUnlockedOnSuccess) {
+      playAttempt
+        ?.then(() => {
+          markAudioUnlocked();
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   const playPop = useCallback(() => {
     if (!isAudioUnlocked()) {
@@ -85,6 +109,8 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   const handleClickAction = useCallback(() => {
+    playClick(true);
+
     const mraid = window.mraid || {};
     if (mraid.open && typeof mraid.open === "function") {
       if (clickUrl) mraid.open(clickUrl);
@@ -94,7 +120,7 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
 
     if (clickUrl) window.open(clickUrl, "_blank", "noopener,noreferrer");
     else window.open();
-  }, [clickUrl]);
+  }, [clickUrl, playClick]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -206,6 +232,16 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
         }
       }}
     >
+      <audio
+        ref={clickAudioRef}
+        src={clickSfx}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
       <audio
         ref={popAudioRef}
         src={popSfx}

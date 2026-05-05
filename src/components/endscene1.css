@@ -10,7 +10,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
 }
 
@@ -21,8 +21,10 @@
 
 .mip-endscene--portrait {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: clamp(20px, 5vh, 44px);
+  padding-bottom: 16px;
 }
 
 .mip-endscene--landscape {
@@ -40,7 +42,7 @@
 .mip-endscene__content-panel--portrait {
   width: 100%;
   max-width: 430px;
-  padding: 28px 0;
+  padding: 12px 0 28px;
   gap: 14px;
   animation: fadeUp 0.6s ease both;
   perspective: 1400px;
@@ -63,7 +65,10 @@
   align-items: center;
   justify-content: center;
   gap: 18px;
+  padding-top: 28px;
+  padding-bottom: 20px;
   perspective: 1400px;
+  overflow: visible;
 }
 
 .mip-endscene__logo {
@@ -74,9 +79,10 @@
 
 .mip-endscene--portrait .mip-endscene__logo {
   max-width: 26%;
-  margin-bottom: 10%;
+  margin-bottom: 20%;
   opacity: 0;
   animation: fadeUp 0.6s 0.05s ease forwards;
+  -webkit-animation: fadeUp 0.6s 0.05s ease forwards;
 }
 
 .mip-endscene--landscape .mip-endscene__logo {
@@ -93,7 +99,7 @@
 .mip-endscene--portrait .mip-endscene__title {
   width: 80%;
   max-width: 360px;
-  margin-bottom: 10%;
+  margin-bottom: 2%;
   opacity: 0;
   animation: fadeUp 0.6s 0.15s ease forwards;
 }
@@ -107,11 +113,15 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: flex-end;
+  padding-top: 18px;
+  padding-bottom: 12px;
   margin-bottom: 14px;
   opacity: 0;
   animation: fadeUp 0.6s 0.25s ease forwards;
-  contain: layout paint;
+  contain: layout;
   isolation: isolate;
+  overflow: visible;
 }
 
 .mip-endscene__image-wrap {
@@ -119,11 +129,11 @@
   overflow: visible;
   background: transparent;
   box-shadow: none;
-  transform-origin: center center;
+  transform-origin: center 68%;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform, opacity;
-  contain: layout paint;
+  contain: layout;
   isolation: isolate;
 }
 
@@ -136,7 +146,15 @@
 }
 
 .mip-endscene--portrait .mip-endscene__image-wrap {
-  width: 80%;
+  width: min(78%, 300px);
+}
+
+.mip-endscene--portrait .mip-endscene__image-wrap.bounce-in {
+  animation: bounceInPortrait 0.46s cubic-bezier(0.2, 0.9, 0.24, 1.12) both;
+}
+
+.mip-endscene--portrait .mip-endscene__image-wrap.bounce-out {
+  animation: bounceOutPortrait 0.38s cubic-bezier(0.55, 0.02, 0.78, 0.2) both;
 }
 
 .mip-endscene--landscape .mip-endscene__image-wrap {
@@ -155,8 +173,38 @@
   backface-visibility: hidden;
 }
 
-.mip-endscene--portrait .mip-endscene__slide-image {
-  margin-bottom: 20px;
+
+
+@media (max-width: 767px) {
+  .mip-endscene--portrait {
+    padding-top: clamp(28px, 7vh, 56px);
+    padding-bottom: 12px;
+  }
+
+  .mip-endscene--portrait .mip-endscene__content-panel--portrait {
+    padding-top: 0;
+    gap: 10px;
+  }
+
+  .mip-endscene--portrait .mip-endscene__stage {
+    min-height: min(46vh, 360px);
+    padding-top: 24px;
+    padding-bottom: 0;
+    margin-bottom: 10%;
+  }
+
+  .mip-endscene--portrait .mip-endscene__image-wrap {
+    width: min(74%, 280px);
+    transform-origin: center 34%;
+  }
+
+  .mip-endscene--portrait .mip-endscene__logo {
+    margin-bottom: 15%;
+  }
+
+  .mip-endscene--portrait .mip-endscene__title {
+    margin-bottom: 0;
+  }
 }
 
 .mip-endscene__cta {
@@ -241,6 +289,43 @@
   100% {
     opacity: 0;
     transform: translate3d(0, 16px, -220px) scale(0.62);
+  }
+}
+
+@keyframes bounceInPortrait {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, -180px) scale(0.62);
+  }
+
+  42% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 80px) scale(1.1);
+  }
+
+  72% {
+    transform: translate3d(0, 2px, 28px) scale(0.985);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes bounceOutPortrait {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  18% {
+    transform: translate3d(0, -2px, 56px) scale(1.03);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 12px, -160px) scale(0.68);
   }
 }
 
