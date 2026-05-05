@@ -429,60 +429,42 @@
 /* ─── Scroll Hand Guide ─────────────────────────────────────────────── */
 .scrollGuide {
   position: fixed;
-  bottom: 24px;
+  bottom: 44px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
   pointer-events: none;
   opacity: 1;
   transition: opacity 500ms ease;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 10px 24px rgba(19, 63, 76, 0.14);
 }
 
 .scrollGuide.is-hidden {
   opacity: 0;
 }
 
-.scrollGuide__hand {
-  font-size: 1.8rem;
-  line-height: 1;
-  animation: handBounce 1.6s ease-in-out infinite;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
-}
-
-.scrollGuide__label {
-  font: 700 0.7rem/1 var(--sans);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--deep-teal);
-}
-
 .scrollGuide__arrow {
-  width: 16px;
-  height: 16px;
-  border-right: 3px solid var(--rose);
-  border-bottom: 3px solid var(--rose);
+  width: 18px;
+  height: 18px;
+  border-right: 2px solid rgba(255, 255, 255, 0.98);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.98);
   transform: rotate(45deg);
-  animation: arrowFade 1.6s ease-in-out infinite;
-  border-radius: 2px;
+  animation: arrowFloat 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 2px 10px rgba(19, 63, 76, 0.32));
 }
 
-@keyframes handBounce {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(8px); }
-}
+@keyframes arrowFloat {
+  0%, 100% {
+    opacity: 0.45;
+    transform: rotate(45deg) translateY(0);
+  }
 
-@keyframes arrowFade {
-  0%,100% { opacity: 1; transform: rotate(45deg) translateY(0); }
-  50%      { opacity: 0.4; transform: rotate(45deg) translateY(4px); }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg) translateY(6px);
+  }
 }
 
 /* ─── Product Shine Frame ────────────────────────────────────────────── */
@@ -711,12 +693,7 @@
   }
 
   .scrollGuide {
-    bottom: 18px;
-    padding: 8px 12px;
-  }
-
-  .scrollGuide__hand {
-    font-size: 1.5rem;
+    bottom: 30px;
   }
 
   .stepLabelImage,

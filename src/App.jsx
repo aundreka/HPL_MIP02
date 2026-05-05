@@ -113,8 +113,6 @@ function ScrollGuide() {
 
   return (
     <div className={`scrollGuide${hidden ? " is-hidden" : ""}`} aria-hidden="true">
-      <span className="scrollGuide__hand">👇</span>
-      <span className="scrollGuide__label">Scroll</span>
       <div className="scrollGuide__arrow" />
     </div>
   );

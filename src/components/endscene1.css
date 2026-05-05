@@ -74,7 +74,7 @@
 }
 
 .mip-endscene--landscape .mip-endscene__logo {
-  max-width: 45%;
+  max-width: 40%;
   margin-bottom: 10%
 }
 
@@ -93,7 +93,7 @@
 }
 
 .mip-endscene--landscape .mip-endscene__title {
-  max-width: 90%;
+  max-width: 80%;
   margin-bottom: 10%;
 }
 
@@ -165,7 +165,7 @@
 }
 
 .mip-endscene--landscape .mip-endscene__cta {
-  width: 70%;
+  width: 60%;
   animation: pulse 1.8s ease-in-out infinite;
 }
 

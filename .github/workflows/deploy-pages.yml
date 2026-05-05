@@ -35,10 +35,26 @@ jobs:
         run: npm run build
 
       - name: Setup Pages
+        id: pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
 
+      - name: Enable Pages
+        if: ${{ steps.pages.outcome == 'failure' && secrets.PAGES_PAT != '' }}
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+          token: ${{ secrets.PAGES_PAT }}
+
+      - name: Validate Pages Configuration
+        if: ${{ steps.pages.outcome == 'failure' && secrets.PAGES_PAT == '' }}
+        run: |
+          echo "::error::GitHub Pages is not enabled for this repository."
+          echo "::error::In GitHub Settings > Pages, set the source to GitHub Actions, or add a PAGES_PAT secret and rerun this workflow."
+          exit 1
+
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
