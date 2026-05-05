@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
-import { ensureAudioUnlocked, primeAudioPlayback } from "./lib/audioUnlock";
 import clickSfx from "./assets/sfx/click.wav";
 import popSfx from "./assets/sfx/pop.mp3";
+import { isAudioUnlocked, markAudioUnlocked } from "./lib/audioState";
 import logoImg from "./assets/MIP/LOGO.png";
 import titleImg from "./assets/MIP/title.png";
 import subtitleImg from "./assets/MIP/subtitle.png";
@@ -126,48 +126,89 @@ function App() {
   const popAudioRef = useRef(null);
   const endsceneTimeoutRef = useRef(null);
 
-  const playAudio = useCallback(async (audioRef, volume) => {
-    const template = audioRef.current;
-    if (!template) {
+  const playMountedAudio = useCallback((audioElement, volume, markUnlockedOnSuccess = false) => {
+    if (!audioElement) {
       return;
     }
 
-    const isUnlocked = await ensureAudioUnlocked();
-    if (!isUnlocked) {
+    audioElement.muted = false;
+    audioElement.defaultMuted = false;
+    audioElement.playsInline = true;
+    audioElement.volume = volume;
+    audioElement.currentTime = 0;
+
+    const playAttempt = audioElement.play();
+    if (markUnlockedOnSuccess) {
+      playAttempt
+        ?.then(() => {
+          markAudioUnlocked();
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const primeMountedAudio = useCallback((audioElement) => {
+    if (!audioElement || isAudioUnlocked()) {
       return;
     }
 
-    const player = template.cloneNode();
-    player.muted = false;
-    player.defaultMuted = false;
-    player.playsInline = true;
-    player.preload = "auto";
-    player.volume = volume;
-    player.currentTime = 0;
+    audioElement.muted = false;
+    audioElement.defaultMuted = false;
+    audioElement.playsInline = true;
+    audioElement.volume = 0;
+    audioElement.currentTime = 0;
 
-    const cleanup = () => {
-      player.pause();
-      player.src = "";
-    };
-
-    player.addEventListener("ended", cleanup, { once: true });
-    player.play().catch(cleanup);
+    const playAttempt = audioElement.play();
+    playAttempt
+      ?.then(() => {
+        markAudioUnlocked();
+        window.setTimeout(() => {
+          audioElement.pause();
+          audioElement.currentTime = 0;
+        }, 0);
+      })
+      .catch(() => {
+        audioElement.muted = true;
+        audioElement.defaultMuted = true;
+      });
   }, []);
 
   useEffect(() => {
-    return primeAudioPlayback();
-  }, []);
+    const handleEarlyUnlock = () => {
+      if (isAudioUnlocked()) {
+        removeListeners();
+        return;
+      }
 
-  // Memoised so each step's Reveal doesn't re-create it on every render
+      primeMountedAudio(clickAudioRef.current);
+    };
+
+    const removeListeners = () => {
+      window.removeEventListener("pointerdown", handleEarlyUnlock, true);
+      window.removeEventListener("touchstart", handleEarlyUnlock, true);
+      window.removeEventListener("keydown", handleEarlyUnlock, true);
+    };
+
+    window.addEventListener("pointerdown", handleEarlyUnlock, true);
+    window.addEventListener("touchstart", handleEarlyUnlock, true);
+    window.addEventListener("keydown", handleEarlyUnlock, true);
+
+    return removeListeners;
+  }, [primeMountedAudio]);
+
   const handleStepReveal = useCallback(() => {
-    void playAudio(popAudioRef, 0.75);
-  }, [playAudio]);
+    if (!isAudioUnlocked()) {
+      return;
+    }
+
+    playMountedAudio(popAudioRef.current, 0.75);
+  }, [playMountedAudio]);
 
   const handleShopNowClick = useCallback(() => {
-    void playAudio(clickAudioRef, 0.45);
+    playMountedAudio(clickAudioRef.current, 0.45, true);
     window.scrollTo({ top: 0, behavior: "auto" });
     setShowEndscene(true);
-  }, [playAudio]);
+  }, [playMountedAudio]);
 
   useEffect(() => {
     if (showEndscene) {

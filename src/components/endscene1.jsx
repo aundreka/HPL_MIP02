@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./endscene1.css";
 import popSfx from "../assets/sfx/pop.mp3";
-import { ensureAudioUnlocked } from "../lib/audioUnlock";
+import { isAudioUnlocked } from "../lib/audioState";
 
 import portraitLogo from "../assets/images/portrait/logo.png";
 import portraitTitle from "../assets/images/portrait/title.png";
@@ -66,32 +66,22 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   const popCountRef = useRef(0);
   const preloadedImagesRef = useRef([]);
 
-  const playPop = useCallback(async () => {
-    const template = popAudioRef.current;
-    if (!template) {
+  const playPop = useCallback(() => {
+    if (!isAudioUnlocked()) {
       return;
     }
 
-    const isUnlocked = await ensureAudioUnlocked();
-    if (!isUnlocked) {
+    const audioElement = popAudioRef.current;
+    if (!audioElement) {
       return;
     }
 
-    const player = template.cloneNode();
-    player.muted = false;
-    player.defaultMuted = false;
-    player.playsInline = true;
-    player.preload = "auto";
-    player.volume = POP_VOLUME;
-    player.currentTime = 0;
-
-    const cleanup = () => {
-      player.pause();
-      player.src = "";
-    };
-
-    player.addEventListener("ended", cleanup, { once: true });
-    player.play().catch(cleanup);
+    audioElement.muted = false;
+    audioElement.defaultMuted = false;
+    audioElement.playsInline = true;
+    audioElement.volume = POP_VOLUME;
+    audioElement.currentTime = 0;
+    audioElement.play().catch(() => {});
   }, []);
 
   const handleClickAction = useCallback(() => {
@@ -169,7 +159,7 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
       image.decode?.().catch(() => {});
       return image;
     });
-  }, []);
+  }, [playPop]);
 
   useEffect(() => {
     if (popCountRef.current > 0) {
