@@ -11,6 +11,12 @@
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
+  cursor: pointer;
+}
+
+.mip-endscene:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: -6px;
 }
 
 .mip-endscene--portrait {

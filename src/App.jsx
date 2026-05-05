@@ -122,6 +122,7 @@ function ScrollGuide() {
 function App() {
   const [showEndscene, setShowEndscene] = useState(false);
   const playClick = useSound(clickSfx, 0.45);
+  const endsceneTimeoutRef = useRef(null);
 
   // Memoised so each step's Reveal doesn't re-create it on every render
   const handleStepReveal = useCallback(() => {
@@ -133,6 +134,46 @@ function App() {
     window.scrollTo({ top: 0, behavior: "auto" });
     setShowEndscene(true);
   }, [playClick]);
+
+  useEffect(() => {
+    if (showEndscene) {
+      return undefined;
+    }
+
+    const clearEndsceneTimeout = () => {
+      if (endsceneTimeoutRef.current) {
+        clearTimeout(endsceneTimeoutRef.current);
+        endsceneTimeoutRef.current = null;
+      }
+    };
+
+    const handleScroll = () => {
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const pageBottom = document.documentElement.scrollHeight;
+      const isAtBottom = scrollPosition >= pageBottom - 4;
+
+      if (isAtBottom) {
+        if (!endsceneTimeoutRef.current) {
+          endsceneTimeoutRef.current = window.setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "auto" });
+            setShowEndscene(true);
+            endsceneTimeoutRef.current = null;
+          }, 2000);
+        }
+        return;
+      }
+
+      clearEndsceneTimeout();
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearEndsceneTimeout();
+    };
+  }, [showEndscene]);
 
   if (showEndscene) {
     return <MIP_Endscene />;

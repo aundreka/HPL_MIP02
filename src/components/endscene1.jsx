@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./endscene1.css";
-import { useSound } from "../hooks/useSound";
-import clickSfx from "../assets/sfx/click.wav";
 import popSfx from "../assets/sfx/pop.mp3";
+import { useSound } from "../hooks/useSound";
 
 import portraitLogo from "../assets/images/portrait/logo.png";
 import portraitTitle from "../assets/images/portrait/title.png";
@@ -61,10 +60,20 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
-  const playClick = useSound(clickSfx, 0.45);
   const playPop = useSound(popSfx, 0.45);
-  const hasMountedRef = useRef(false);
   const timeoutRef = useRef(null);
+
+  const handleClickAction = useCallback(() => {
+    const mraid = window.mraid || {};
+    if (mraid.open && typeof mraid.open === "function") {
+      if (clickUrl) mraid.open(clickUrl);
+      else mraid.open();
+      return;
+    }
+
+    if (clickUrl) window.open(clickUrl, "_blank", "noopener,noreferrer");
+    else window.open();
+  }, [clickUrl]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -101,13 +110,8 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
-    }
-
     playPop();
-  }, [current, playPop]);
+  }, [playPop]);
 
   const assets = isLandscape
     ? {
@@ -130,22 +134,20 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
     bouncing ? "bounce-out" : "bounce-in",
   ].join(" ");
 
-  const handleOpenShop = useCallback(() => {
-    playClick();
-
-    const mraid = window.mraid || {};
-    if (mraid.open && typeof mraid.open === "function") {
-      mraid.open(clickUrl || BLANK_PAGE_URL);
-      return;
-    }
-
-    window.open(clickUrl || BLANK_PAGE_URL, "_blank", "noopener,noreferrer");
-  }, [clickUrl, playClick]);
 
   return (
     <div
       className={`mip-endscene mip-endscene--${isLandscape ? "landscape" : "portrait"}`}
       style={{ backgroundImage: `url(${assets.bg})` }}
+      onClick={handleClickAction}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleClickAction();
+        }
+      }}
     >
       {isLandscape ? (
         <>
@@ -172,7 +174,6 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
               src={assets.cta}
               alt="Shop Now"
               className="mip-endscene__cta"
-              onClick={handleOpenShop}
             />
           </div>
         </>
@@ -199,7 +200,6 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
             src={assets.cta}
             alt="Shop Now"
             className="mip-endscene__cta"
-            onClick={handleOpenShop}
           />
         </div>
       )}
