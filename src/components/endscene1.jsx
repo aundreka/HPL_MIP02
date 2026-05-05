@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./endscene1.css";
 import clickSfx from "../assets/sfx/click.wav";
 import popSfx from "../assets/sfx/pop.mp3";
-import { isAudioUnlocked, markAudioUnlocked } from "../lib/audioState";
+import { markAudioUnlocked } from "../lib/audioState";
+import { playUnlockedAudio } from "../lib/audioUnlock";
 
 import portraitLogo from "../assets/images/portrait/logo.png";
 import portraitTitle from "../assets/images/portrait/title.png";
@@ -60,15 +61,13 @@ function getIsLandscapeLayout() {
 
 export default function Endscene1({
   clickUrl = BLANK_PAGE_URL,
-  suppressInitialPop = false,
 }) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
   const clickAudioRef = useRef(null);
-  const popAudioRef = useRef(null);
   const timeoutRef = useRef(null);
-  const popCountRef = useRef(0);
+  const hasPlayedInitialPopRef = useRef(false);
   const preloadedImagesRef = useRef([]);
 
   const playClick = useCallback((markUnlockedOnSuccess = false) => {
@@ -91,24 +90,6 @@ export default function Endscene1({
         })
         .catch(() => {});
     }
-  }, []);
-
-  const playPop = useCallback(() => {
-    if (!isAudioUnlocked()) {
-      return;
-    }
-
-    const audioElement = popAudioRef.current;
-    if (!audioElement) {
-      return;
-    }
-
-    audioElement.muted = false;
-    audioElement.defaultMuted = false;
-    audioElement.playsInline = true;
-    audioElement.volume = POP_VOLUME;
-    audioElement.currentTime = 0;
-    audioElement.play().catch(() => {});
   }, []);
 
   const handleClickAction = useCallback(() => {
@@ -138,11 +119,6 @@ export default function Endscene1({
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (popCountRef.current === 1) {
-        playPop();
-        popCountRef.current = 2;
-      }
-
       setBouncing(true);
 
       if (timeoutRef.current) {
@@ -188,21 +164,16 @@ export default function Endscene1({
       image.decode?.().catch(() => {});
       return image;
     });
-  }, [playPop]);
+  }, []);
 
   useEffect(() => {
-    if (popCountRef.current > 0) {
+    if (hasPlayedInitialPopRef.current) {
       return;
     }
 
-    if (suppressInitialPop) {
-      popCountRef.current = 1;
-      return;
-    }
-
-    playPop();
-    popCountRef.current = 1;
-  }, [playPop, suppressInitialPop]);
+    void playUnlockedAudio(popSfx, POP_VOLUME);
+    hasPlayedInitialPopRef.current = true;
+  }, []);
 
   const assets = isLandscape
     ? {
@@ -243,16 +214,6 @@ export default function Endscene1({
       <audio
         ref={clickAudioRef}
         src={clickSfx}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-        style={{ display: "none" }}
-      />
-      <audio
-        ref={popAudioRef}
-        src={popSfx}
         autoPlay
         muted
         playsInline

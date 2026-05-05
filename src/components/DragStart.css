@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+.dragStartRoute {
+  position: relative;
+  isolation: isolate;
+}
+
+.dragStartRoute.is-exiting {
+  pointer-events: none;
+}
+
+.dragStartRoute.is-exiting .dragStart {
+  pointer-events: none;
+  animation: overlayExit 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── shell ── */
+.dragStart {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: #3e4139;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+}
+
+.dragStart__grain {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* ── drop zone ── */
+.dragStart__dropZone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 36px 24px 24px;
+  transition: background 260ms ease;
+}
+
+.dragStart__dropZone.is-over {
+  background: rgba(255,255,255,0.05);
+}
+
+.dragStart__dropZone.is-dropped {
+  background: rgba(255,245,230,0.04);
+}
+
+/* ── hand / eye wrap ── */
+.dragStart__handWrap {
+  width: 72px;
+  height: 90px;
+  animation: handFloat 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.3));
+}
+
+.dragStart__handSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.dragStart__eyeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 100px;
+  justify-content: center;
+}
+
+.dragStart__eyeSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: successReveal 500ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.dragStart__eyeSuccess .dragStart__lashIcon {
+  width: 90px;
+  height: 28px;
+  color: rgba(255,255,255,0.9);
+}
+
+.dragStart__eyeSvg {
+  width: 100px;
+  height: 38px;
+}
+
+.dragStart__dropZone.is-over .dragStart__handWrap {
+  animation: handPulse 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes handFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%       { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes handPulse {
+  from { transform: scale(0.97) rotate(-2deg); }
+  to   { transform: scale(1.07) rotate(2deg); }
+}
+
+@keyframes successReveal {
+  from { transform: scale(0.6) translateY(10px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+
+/* ── drop label ── */
+.dragStart__dropLabel {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.7rem, 7.5vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.92);
+  text-align: center;
+  white-space: pre-line;
+  line-height: 1.15;
+  font-style: italic;
+}
+
+/* ── divider ── */
+.dragStart__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 0 24px;
+  flex-shrink: 0;
+}
+
+/* ── lash palette ── */
+.dragStart__palette {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 18px 20px 10px;
+}
+
+.dragStart__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 12px 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.82);
+  cursor: grab;
+  touch-action: none;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, opacity 200ms ease;
+}
+
+.dragStart__chip:hover {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.26);
+  transform: translateY(-2px);
+}
+
+.dragStart__chip.is-dragging {
+  opacity: 0.25;
+  transform: scale(0.93);
+  cursor: grabbing;
+}
+
+.dragStart__chip.is-dropped {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.dragStart__chip:disabled {
+  cursor: default;
+}
+
+/* ── lash SVG icon on chips ── */
+.dragStart__lashIcon {
+  width: 70px;
+  height: 22px;
+  color: rgba(255,255,255,0.78);
+  transition: color 180ms ease;
+  flex-shrink: 0;
+}
+
+.dragStart__lashIcon.is-active {
+  color: rgba(255,255,255,0.95);
+}
+
+.dragStart__chip:hover .dragStart__lashIcon {
+  color: rgba(255,255,255,0.95);
+}
+
+.dragStart__chipText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.dragStart__chipLabel {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-style: italic;
+  line-height: 1;
+}
+
+.dragStart__chipSub {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+/* ── shop now ── */
+.dragStart__shopWrap {
+  padding: 6px 24px 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.dragStart__shopBtn {
+  min-width: 180px;
+  padding: 14px 34px;
+  border: none;
+  border-radius: 999px;
+  background: #1a1a16;
+  color: rgba(255,255,255,0.82);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.dragStart__shopBtn:hover {
+  transform: translateY(-2px);
+  background: #2c2c26;
+  color: rgba(255,255,255,0.96);
+}
+
+.dragStart__shopBtn:active {
+  transform: scale(0.97);
+}
+
+/* ── ghost ── */
+.dragStart__ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -60%) rotate(-2deg) scale(1.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 16px 10px;
+  border-radius: 14px;
+  background: rgba(28,26,20,0.88);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.45);
+  will-change: transform;
+}
+
+.dragStart__ghost .dragStart__lashIcon {
+  width: 68px;
+  height: 22px;
+  color: rgba(255,255,255,0.88);
+}
+
+.dragStart__ghostLabel {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+/* ── exit ── */
+.dragStart--dropped {
+  pointer-events: none;
+  animation: overlayExit 700ms cubic-bezier(0.22, 1, 0.36, 1) 700ms both;
+}
+
+@keyframes overlayExit {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.03); }
+}
+
+/* ── reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dragStart__handWrap,
+  .dragStart--dropped,
+  .dragStart__eyeSuccess {
+    animation: none;
+  }
+  .dragStart--dropped { opacity: 0; }
+  .dragStart__eyeSuccess { opacity: 1; }
+}

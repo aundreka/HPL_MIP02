@@ -3,6 +3,7 @@ import "./App.css";
 import clickSfx from "./assets/sfx/click.wav";
 import popSfx from "./assets/sfx/pop.mp3";
 import { isAudioUnlocked, markAudioUnlocked } from "./lib/audioState";
+import { playUnlockedAudio } from "./lib/audioUnlock";
 import logoImg from "./assets/MIP/LOGO.png";
 import titleImg from "./assets/MIP/title.png";
 import subtitleImg from "./assets/MIP/subtitle.png";
@@ -122,10 +123,10 @@ function ScrollGuide() {
 /* ─── App ─────────────────────────────────────────────────────────── */
 function App() {
   const [showEndscene, setShowEndscene] = useState(false);
-  const [endsceneFromCta, setEndsceneFromCta] = useState(false);
   const clickAudioRef = useRef(null);
   const popAudioRef = useRef(null);
   const endsceneTimeoutRef = useRef(null);
+  const ctaTransitionTimeoutRef = useRef(null);
 
   const playMountedAudio = useCallback((audioElement, volume, markUnlockedOnSuccess = false) => {
     if (!audioElement) {
@@ -206,11 +207,23 @@ function App() {
   }, [playMountedAudio]);
 
   const handleShopNowClick = useCallback(() => {
-    playMountedAudio(clickAudioRef.current, 0.45, true);
-    setEndsceneFromCta(true);
+    void playUnlockedAudio(clickSfx, 0.45).then((didPlay) => {
+      if (didPlay) {
+        markAudioUnlocked();
+      }
+    });
+
     window.scrollTo({ top: 0, behavior: "auto" });
-    setShowEndscene(true);
-  }, [playMountedAudio]);
+
+    if (ctaTransitionTimeoutRef.current) {
+      window.clearTimeout(ctaTransitionTimeoutRef.current);
+    }
+
+    ctaTransitionTimeoutRef.current = window.setTimeout(() => {
+      setShowEndscene(true);
+      ctaTransitionTimeoutRef.current = null;
+    }, 140);
+  }, []);
 
   useEffect(() => {
     if (showEndscene) {
@@ -233,7 +246,6 @@ function App() {
         if (!endsceneTimeoutRef.current) {
           endsceneTimeoutRef.current = window.setTimeout(() => {
             window.scrollTo({ top: 0, behavior: "auto" });
-            setEndsceneFromCta(false);
             setShowEndscene(true);
             endsceneTimeoutRef.current = null;
           }, 2000);
@@ -250,11 +262,14 @@ function App() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
       clearEndsceneTimeout();
+      if (ctaTransitionTimeoutRef.current) {
+        window.clearTimeout(ctaTransitionTimeoutRef.current);
+      }
     };
   }, [showEndscene]);
 
   if (showEndscene) {
-    return <MIP_Endscene suppressInitialPop={endsceneFromCta} />;
+    return <MIP_Endscene />;
   }
 
   return (

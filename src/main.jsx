@@ -1,25 +1,53 @@
-import { StrictMode, Suspense, lazy, startTransition, useState } from "react";
+import { StrictMode, Suspense, lazy, startTransition, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Start from "./components/start.jsx";
+import DragStart from "./components/DragStart.jsx";
+import loadSfx from "./assets/sfx/load.mp3";
+import { playUnlockedAudio, primeAudioPlayback } from "./lib/audioUnlock";
 
 const App = lazy(() => import("./App.jsx"));
+const APP_TRANSITION_MS = 320;
 
 function Root() {
   const [hasStarted, setHasStarted] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const transitionTimeoutRef = useRef(null);
 
   const handleStart = () => {
-    startTransition(() => {
-      setHasStarted(true);
-    });
+    if (hasStarted || isExiting) {
+      return;
+    }
+
+    void playUnlockedAudio(loadSfx, 0.6);
+    setIsExiting(true);
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      startTransition(() => {
+        setHasStarted(true);
+      });
+    }, APP_TRANSITION_MS);
   };
 
+  useEffect(() => {
+    const removeAudioListeners = primeAudioPlayback();
+
+    return () => {
+      removeAudioListeners();
+      if (transitionTimeoutRef.current) {
+        window.clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (!hasStarted) {
-    return <Start onStart={handleStart} />;
+    return (
+      <div className={`dragStartRoute${isExiting ? " is-exiting" : ""}`}>
+        <DragStart onStart={handleStart} />
+      </div>
+    );
   }
 
   return (
-    <Suspense fallback={<Start onStart={handleStart} />}>
+    <Suspense fallback={null}>
       <App />
     </Suspense>
   );

@@ -4,6 +4,14 @@ const SILENT_WAV_DATA_URI =
 let isAudioUnlocked = false;
 let unlockInFlight = null;
 
+export function hasAudioPlaybackUnlocked() {
+  return isAudioUnlocked;
+}
+
+export function setAudioPlaybackUnlocked(value = true) {
+  isAudioUnlocked = value;
+}
+
 async function unlockAudioPlayback() {
   if (isAudioUnlocked) {
     return true;
@@ -23,7 +31,7 @@ async function unlockAudioPlayback() {
     .then(() => {
       audio.pause();
       audio.currentTime = 0;
-      isAudioUnlocked = true;
+      setAudioPlaybackUnlocked(true);
       unlockInFlight = null;
       return true;
     })
@@ -69,4 +77,38 @@ export async function ensureAudioUnlocked() {
   }
 
   return unlockAudioPlayback();
+}
+
+export async function playUnlockedAudio(src, volume = 0.7) {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const isUnlocked = await ensureAudioUnlocked();
+  if (!isUnlocked) {
+    return false;
+  }
+
+  const audio = new Audio(src);
+  audio.preload = "auto";
+  audio.muted = false;
+  audio.defaultMuted = false;
+  audio.playsInline = true;
+  audio.volume = volume;
+  audio.currentTime = 0;
+
+  const cleanup = () => {
+    audio.pause();
+    audio.src = "";
+  };
+
+  audio.addEventListener("ended", cleanup, { once: true });
+
+  try {
+    await audio.play();
+    return true;
+  } catch {
+    cleanup();
+    return false;
+  }
 }

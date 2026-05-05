@@ -1,9 +1,12 @@
-let hasUnlockedAudio = false;
+import {
+  hasAudioPlaybackUnlocked,
+  setAudioPlaybackUnlocked,
+} from "./audioUnlock";
 
 export function isAudioUnlocked() {
-  return hasUnlockedAudio;
+  return hasAudioPlaybackUnlocked();
 }
 
 export function markAudioUnlocked() {
-  hasUnlockedAudio = true;
+  setAudioPlaybackUnlocked(true);
 }
