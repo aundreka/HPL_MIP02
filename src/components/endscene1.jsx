@@ -58,7 +58,10 @@ function getIsLandscapeLayout() {
   return window.innerWidth >= LANDSCAPE_BREAKPOINT;
 }
 
-export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
+export default function Endscene1({
+  clickUrl = BLANK_PAGE_URL,
+  suppressInitialPop = false,
+}) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
@@ -192,9 +195,14 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
       return;
     }
 
+    if (suppressInitialPop) {
+      popCountRef.current = 1;
+      return;
+    }
+
     playPop();
     popCountRef.current = 1;
-  }, [playPop]);
+  }, [playPop, suppressInitialPop]);
 
   const assets = isLandscape
     ? {

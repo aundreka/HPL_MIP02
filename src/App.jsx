@@ -122,6 +122,7 @@ function ScrollGuide() {
 /* ─── App ─────────────────────────────────────────────────────────── */
 function App() {
   const [showEndscene, setShowEndscene] = useState(false);
+  const [endsceneFromCta, setEndsceneFromCta] = useState(false);
   const clickAudioRef = useRef(null);
   const popAudioRef = useRef(null);
   const endsceneTimeoutRef = useRef(null);
@@ -206,6 +207,7 @@ function App() {
 
   const handleShopNowClick = useCallback(() => {
     playMountedAudio(clickAudioRef.current, 0.45, true);
+    setEndsceneFromCta(true);
     window.scrollTo({ top: 0, behavior: "auto" });
     setShowEndscene(true);
   }, [playMountedAudio]);
@@ -231,6 +233,7 @@ function App() {
         if (!endsceneTimeoutRef.current) {
           endsceneTimeoutRef.current = window.setTimeout(() => {
             window.scrollTo({ top: 0, behavior: "auto" });
+            setEndsceneFromCta(false);
             setShowEndscene(true);
             endsceneTimeoutRef.current = null;
           }, 2000);
@@ -251,7 +254,7 @@ function App() {
   }, [showEndscene]);
 
   if (showEndscene) {
-    return <MIP_Endscene />;
+    return <MIP_Endscene suppressInitialPop={endsceneFromCta} />;
   }
 
   return (
