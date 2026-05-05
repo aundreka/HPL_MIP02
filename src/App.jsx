@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
 import { useSound } from "./hooks/useSound";
+import { primeAudioPlayback } from "./lib/audioUnlock";
 import clickSfx from "./assets/sfx/click.wav";
 import logoImg from "./assets/MIP/LOGO.png";
 import titleImg from "./assets/MIP/title.png";
@@ -123,6 +124,10 @@ function App() {
   const [showEndscene, setShowEndscene] = useState(false);
   const playClick = useSound(clickSfx, 0.45);
   const endsceneTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return primeAudioPlayback();
+  }, []);
 
   // Memoised so each step's Reveal doesn't re-create it on every render
   const handleStepReveal = useCallback(() => {

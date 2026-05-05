@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./endscene1.css";
 import popSfx from "../assets/sfx/pop.mp3";
-import { useSound } from "../hooks/useSound";
+import { ensureAudioUnlocked } from "../lib/audioUnlock";
 
 import portraitLogo from "../assets/images/portrait/logo.png";
 import portraitTitle from "../assets/images/portrait/title.png";
@@ -47,6 +47,7 @@ const INTERVAL = 2000;
 const BOUNCE_OUT_DURATION = 420;
 const BLANK_PAGE_URL = "about:blank";
 const LANDSCAPE_BREAKPOINT = 768;
+const POP_VOLUME = 0.75;
 
 function getIsLandscapeLayout() {
   if (typeof window === "undefined") {
@@ -60,8 +61,10 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   const [current, setCurrent] = useState(0);
   const [bouncing, setBouncing] = useState(false);
   const [isLandscape, setIsLandscape] = useState(getIsLandscapeLayout);
-  const playPop = useSound(popSfx, 0.45);
   const timeoutRef = useRef(null);
+  const popAudioRef = useRef(null);
+  const popCountRef = useRef(0);
+  const preloadedImagesRef = useRef([]);
 
   const handleClickAction = useCallback(() => {
     const mraid = window.mraid || {};
@@ -87,15 +90,48 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
+    const playPopInstance = async () => {
+      const template = popAudioRef.current;
+      if (!template) {
+        return false;
+      }
+
+      const player = template.cloneNode();
+      player.volume = POP_VOLUME;
+      player.currentTime = 0;
+      await player.play();
+      return true;
+    };
+
     const timer = setInterval(() => {
+      if (popCountRef.current === 1) {
+        void ensureAudioUnlocked()
+          .then((isUnlocked) => {
+            if (!isUnlocked || popCountRef.current !== 1) {
+              return false;
+            }
+
+            return playPopInstance();
+          })
+          .then((didPlay) => {
+            if (didPlay) {
+              popCountRef.current = 2;
+            }
+          })
+          .catch(() => {});
+      }
+
       setBouncing(true);
 
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
 
       timeoutRef.current = setTimeout(() => {
-        setCurrent((prev) => (prev + 1) % PORTRAIT_IMAGES.length);
+        setCurrent((prevCurrent) => {
+          return (prevCurrent + 1) % PORTRAIT_IMAGES.length;
+        });
         setBouncing(false);
         timeoutRef.current = null;
       }, BOUNCE_OUT_DURATION);
@@ -110,8 +146,110 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
   }, []);
 
   useEffect(() => {
-    playPop();
-  }, [playPop]);
+    const audio = new Audio(popSfx);
+    audio.preload = "auto";
+    audio.volume = POP_VOLUME;
+    audio.load();
+    popAudioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+      popAudioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const imageSources = [
+      portraitBg,
+      portraitLogo,
+      portraitTitle,
+      portraitCta,
+      landscapeBg,
+      landscapeLogo,
+      landscapeTitle,
+      landscapeCta,
+      ...PORTRAIT_IMAGES,
+      ...LANDSCAPE_IMAGES,
+    ];
+
+    preloadedImagesRef.current = imageSources.map((src) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = src;
+      image.decode?.().catch(() => {});
+      return image;
+    });
+  }, []);
+
+  useEffect(() => {
+    let removedListeners = false;
+
+    const playPopInstance = async () => {
+      const template = popAudioRef.current;
+      if (!template) {
+        return false;
+      }
+
+      const player = template.cloneNode();
+      player.volume = POP_VOLUME;
+      player.currentTime = 0;
+      await player.play();
+      return true;
+    };
+
+    const removeRetryListeners = () => {
+      if (removedListeners) {
+        return;
+      }
+
+      removedListeners = true;
+      window.removeEventListener("pointerdown", retryPlay);
+      window.removeEventListener("keydown", retryPlay);
+      window.removeEventListener("touchstart", retryPlay);
+    };
+
+    const startFirstPop = async () => {
+      if (popCountRef.current > 0) {
+        removeRetryListeners();
+        return;
+      }
+
+      try {
+        const isUnlocked = await ensureAudioUnlocked();
+        if (!isUnlocked) {
+          return;
+        }
+
+        const didPlay = await playPopInstance();
+        if (!didPlay) {
+          return;
+        }
+
+        popCountRef.current = 1;
+        removeRetryListeners();
+      } catch {
+        // Autoplay can be blocked until the next user gesture.
+      }
+    };
+
+    const retryPlay = () => {
+      void startFirstPop();
+    };
+
+    const frameId = window.requestAnimationFrame(() => {
+      void startFirstPop();
+    });
+
+    window.addEventListener("pointerdown", retryPlay, { passive: true });
+    window.addEventListener("keydown", retryPlay);
+    window.addEventListener("touchstart", retryPlay, { passive: true });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      removeRetryListeners();
+    };
+  }, []);
 
   const assets = isLandscape
     ? {
@@ -157,10 +295,10 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
                 src={assets.images[current]}
                 alt={`Slide ${current + 1}`}
                 className="mip-endscene__slide-image"
+                decoding="async"
+                fetchPriority="high"
               />
             </div>
-
-           
           </div>
 
           <div className="mip-endscene__content-panel mip-endscene__content-panel--landscape">
@@ -188,11 +326,13 @@ export default function Endscene1({ clickUrl = BLANK_PAGE_URL }) {
 
           <div className="mip-endscene__stage">
             <div className={imageWrapClassName}>
-              <img
-                src={assets.images[current]}
-                alt={`Product ${current + 1}`}
-                className="mip-endscene__slide-image"
-              />
+                <img
+                  src={assets.images[current]}
+                  alt={`Product ${current + 1}`}
+                  className="mip-endscene__slide-image"
+                  decoding="async"
+                  fetchPriority="high"
+                />
             </div>
           </div>
 

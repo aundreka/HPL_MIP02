@@ -110,6 +110,8 @@
   margin-bottom: 14px;
   opacity: 0;
   animation: fadeUp 0.6s 0.25s ease forwards;
+  contain: layout paint;
+  isolation: isolate;
 }
 
 .mip-endscene__image-wrap {
@@ -121,6 +123,8 @@
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform, opacity;
+  contain: layout paint;
+  isolation: isolate;
 }
 
 .mip-endscene__image-wrap.bounce-in {
@@ -147,6 +151,8 @@
   object-fit: cover;
   border-radius: 0;
   background: transparent;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .mip-endscene--portrait .mip-endscene__slide-image {
@@ -249,5 +255,24 @@
 
   100% {
     transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mip-endscene__content-panel--portrait,
+  .mip-endscene__logo,
+  .mip-endscene__title,
+  .mip-endscene__stage,
+  .mip-endscene__image-wrap,
+  .mip-endscene__cta {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .mip-endscene__logo,
+  .mip-endscene__title,
+  .mip-endscene__stage,
+  .mip-endscene__cta {
+    opacity: 1;
   }
 }
