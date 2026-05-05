@@ -1,68 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
 .startScreen {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(255, 253, 253, 0.72);
+  background: #f5f3ef;
+  position: relative;
+  overflow: hidden;
 }
+
+.startScreen__grain {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.startScreen__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+
 
 .startScreen__button {
-  width: min(100%, 380px);
-  min-height: 76px;
-  padding: 18px 28px;
-  border: 0;
-  border-radius: 20px;
-  background: #073d49;
-  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 340px);
+  min-height: 64px;
+  padding: 0 32px;
+  border: 1.5px solid #1a1916;
+  border-radius: 6px;
+  background: transparent;
+  color: #1a1916;
   cursor: pointer;
-  font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
-  font-size: clamp(1.2rem, 3.5vw, 1.7rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-  box-shadow: 0 14px 28px rgba(7, 61, 73, 0.12);
+  font-family: 'DM Sans', sans-serif;
+  transition: background 200ms ease, color 200ms ease, transform 150ms ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.startScreen__button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 34px rgba(7, 61, 73, 0.2);
+.startScreen__button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #1a1916;
+  transform: translateY(101%);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.startScreen__button:hover::before {
+  transform: translateY(0);
+}
+
+.startScreen__button:hover .startScreen__buttonText,
+.startScreen__button:hover .startScreen__buttonIcon {
+  color: #f5f3ef;
 }
 
 .startScreen__button:active {
-  transform: translateY(0);
-  opacity: 0.96;
+  transform: scale(0.98);
+}
+
+.startScreen__buttonText {
+  flex: 1;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 200ms ease;
+}
+
+.startScreen__buttonIcon {
+  font-size: 1.25rem;
+  font-weight: 300;
+  position: relative;
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.startScreen__button:hover .startScreen__buttonIcon {
+  transform: translateX(4px);
 }
 
 .startScreen__button:focus-visible {
-  outline: 3px solid rgba(7, 61, 73, 0.24);
-  outline-offset: 4px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 25, 22, 0.2);
 }
 
-@media (max-width: 640px) {
-  .startScreen {
-    padding: 20px 16px;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
-
-  .startScreen__button {
-    width: min(100%, 320px);
-    min-height: 66px;
-    padding: 16px 24px;
-    border-radius: 18px;
-    font-size: clamp(1rem, 5vw, 1.3rem);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 420px) {
-  .startScreen {
-    padding: 16px 12px;
-  }
-
+@media (max-width: 480px) {
   .startScreen__button {
     width: 100%;
-    min-height: 62px;
-    padding: 16px 20px;
-    border-radius: 16px;
-    letter-spacing: 0.03em;
+    min-height: 58px;
+    padding: 0 24px;
+    border-radius: 5px;
   }
 }
